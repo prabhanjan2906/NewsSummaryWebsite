@@ -4,7 +4,7 @@ resource "aws_lambda_function" "news_summary" {
   filename      = "lambda_function_payload.zip" # Update with your deployment package path
   handler       = "index.handler"
   runtime       = "python3.9"
-  role          = aws_iam_role.github_actions_role.arn
+  role          = data.aws_iam_role.github_actions_role.arn
 
   environment {
     variables = {
