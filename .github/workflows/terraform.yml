@@ -53,6 +53,21 @@ permissions:
   contents: read
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Create zip archive for news_headlines_function lambda function
+      run: zip -r lambda_news_api_fetcher.zip ./application/lambda/NewsApi -x "*.git*"
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: lambda_news_api_fetcher
+        path: lambda_news_api_fetcher.zip
   terraform:
     name: 'Terraform'
     permissions:
