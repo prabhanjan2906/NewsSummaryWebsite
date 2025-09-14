@@ -63,7 +63,7 @@ jobs:
     - name: Create zip archive for news_headlines_function lambda function
       run: |
         cd application/lambda/NewsApi
-        zip -r ../../../lambda_news_api_fetcher.zip ./* -x "*.git*"
+        zip -r ../../../infrastructure/lambda_news_api_fetcher.zip ./* -x "*.git*"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
