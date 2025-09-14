@@ -66,13 +66,20 @@ jobs:
     - name: Create zip archive for news_headlines_function lambda function
       run: |
         cd application/lambda/NewsApi
-        zip -r ../../../infrastructure/lambda_news_api_fetcher.zip ./* -x "*.git*"
+        zip -r ../../../lambda_news_api_fetcher.zip ./* -x "*.git*"
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-2
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: lambda_news_api_fetcher
-        path: infrastructure/lambda_news_api_fetcher.zip
+        path: lambda_news_api_fetcher.zip
   terraform:
     name: 'Terraform'
     permissions:
@@ -116,6 +123,12 @@ jobs:
     - name: Terraform Validate
       run: terraform -chdir=infrastructure validate
 
+    - name: Download Lambda zip artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: lambda_news_api_fetcher
+        path: infrastructure/
+        
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       env:
