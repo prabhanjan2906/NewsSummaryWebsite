@@ -8,7 +8,9 @@ resource "aws_lambda_function" "news_summary" {
 
   environment {
     variables = {
+      ENVIRONMENT = "development"
       language = "en"
+      COUNTRY=var.COUNTRY
     }
   }
 }
