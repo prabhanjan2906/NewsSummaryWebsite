@@ -86,15 +86,15 @@ jobs:
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
-      run: terraform init
+      run: terraform -chdir=infrastructure init
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
-      run: terraform fmt -check
+      run: terraform -chdir=infrastructure fmt -check
 
     # validates Terraform
     - name: Terraform Validate
-      run: terraform validate
+      run: terraform -chdir=infrastructure validate
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
@@ -105,4 +105,4 @@ jobs:
     - name: Terraform Apply
       if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
       # run: terraform apply -auto-approve -input=false
-      run: terraform apply -input=false
+      run: terraform -chdir=infrastructure apply -input=false
