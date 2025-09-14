@@ -61,7 +61,9 @@ jobs:
         fetch-depth: 0
 
     - name: Create zip archive for news_headlines_function lambda function
-      run: zip -r lambda_news_api_fetcher.zip ./application/lambda/NewsApi -x "*.git*"
+      run: |
+        cd application/lambda/NewsApi
+        zip -r ../../../lambda_news_api_fetcher.zip ./* -x "*.git*"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4

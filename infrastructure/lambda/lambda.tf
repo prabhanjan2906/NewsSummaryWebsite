@@ -1,8 +1,8 @@
 # Lambda function using python3.9
 resource "aws_lambda_function" "news_headlines" {
   function_name = "news_headlines_function"
-  filename      = "newsapi.zip" # Update with your deployment package path
-  handler       = "headlines_entry_point.handler"
+  filename = "${path.module}/lambda_news_api_fetcher.zip"
+  handler  = "headlines_entry_point.handler"
   runtime       = "python3.9"
   role          = data.aws_iam_role.github_actions_role.arn
 
