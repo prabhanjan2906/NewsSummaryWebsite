@@ -8,10 +8,10 @@ resource "aws_lambda_function" "news_summary" {
 
   environment {
     variables = {
-      ENVIRONMENT = "development"
+      ENVIRONMENT  = "development"
       NEWS_API_KEY = var.NEWS_API_KEY
-      LANGUAGE    = "en"
-      COUNTRY     = var.COUNTRY
+      LANGUAGE     = "en"
+      COUNTRY      = var.COUNTRY
     }
   }
 }
