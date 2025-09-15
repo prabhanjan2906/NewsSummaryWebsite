@@ -6,6 +6,5 @@ import newsHeadlinesFetcher
 
 def handler(event, context):
     data = newsHeadlinesFetcher.getNews()
-    status_code = 200 if data and data['status'] == 'ok' else 417
     payload = data['articles'] if data else []
-    return {"statusCode": status_code, "body": payload}
+    return {"statusCode": 200 if data else 417, "body": payload}
