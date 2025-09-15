@@ -7,3 +7,8 @@ variable "COUNTRY" {
   description = "country to fetch news articles from"
   type        = string
 }
+
+variable "LANGUAGE" {
+  description = "language of the news articles"
+  type        = string
+}

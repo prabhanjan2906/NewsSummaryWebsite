@@ -10,7 +10,7 @@ resource "aws_lambda_function" "news_headlines" {
     variables = {
       ENVIRONMENT  = "development"
       NEWS_API_KEY = var.NEWS_API_KEY
-      LANGUAGE     = "en"
+      LANGUAGE     = var.LANGUAGE
       COUNTRY      = var.COUNTRY
     }
   }
