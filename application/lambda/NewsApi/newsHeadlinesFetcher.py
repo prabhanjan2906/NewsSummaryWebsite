@@ -10,7 +10,7 @@ def getNews(q=None, *args, **kwargs):
             articles = client.get_top_headlines(*args, **kwargs)
         else:
             articles = client.get_everything(q,*args, **kwargs)
-            return articles['articles']
+        return articles['articles']
     except Exception as e:
         print(f"Error fetching articles: {e}")
         return None
