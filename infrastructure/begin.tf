@@ -16,6 +16,6 @@ output "lambda_function_ds" {
 output "lambda_function_invalid" {
   value = module.lambda.headlines_lambda_function_name_invalid
 }
-output "lambda_datasource_arn" {
+output "lambda_datasource_arn_invalid" {
   value = module.lambda.lambda_function_arn_invalid
 }
