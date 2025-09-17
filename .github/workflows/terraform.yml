@@ -47,7 +47,7 @@ name: 'Terraform'
 
 on:
   push:
-    branches: [ "main" , "develop"]
+    branches: [ "main" , "develop", "develop_*"]
   pull_request:
 
 permissions:
@@ -171,7 +171,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: lambda_news_api_fetcher
-        path: infrastructure/lambda/
+        path: infrastructure/newsapi_fetcher_lambda/
         
     # Generates an execution plan for Terraform
     - name: Terraform Plan
@@ -187,7 +187,8 @@ jobs:
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
     - name: Terraform Apply
       working-directory: ./infrastructure
-      if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+      # if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+      if: github.event_name == 'push'
       env:
         TF_VAR_NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
         TF_VAR_COUNTRY: ${{ vars.COUNTRY }}
