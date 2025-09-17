@@ -39,4 +39,5 @@ resource "aws_scheduler_schedule" "newsapi_fetch_scheduler" {
     arn      = data.aws_lambda_function.headlines.arn
     role_arn = aws_iam_role.newsapi_scheduler_invoke_role.arn
   }
+  depends_on = [ aws_iam_role_policy_attachment.invoke_attach, aws_lambda_function.news_headlines ]
 }

@@ -26,10 +26,9 @@ data "aws_iam_role" "github_actions_role" {
 # NOTE: add a VPC and restrict lambda access to internet. If attached to a VPC, the VPC has a NAT gateway or NAT instance and proper route table configuration.
 
 data "aws_lambda_function" "headlines" {
-  count = try(aws_lambda_function.news_headlines.id != "" ? 1 : 0, 0)
   function_name = local.lambda_function_name
 }
 
 output "newsapi_fetcher_lambda_function_arn" {
-  value = try(data.aws_lambda_function.headlines[0].arn, "")
+  value = data.aws_lambda_function.headlines.arn
 }
