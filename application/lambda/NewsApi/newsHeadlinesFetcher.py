@@ -3,7 +3,6 @@ from defines import injectDictionaryGeneral
 
 @injectDictionaryGeneral
 def getNews(q=None, *args, **kwargs):
-    print(args, kwargs)
     try:
         articles = []
         if q is None:
