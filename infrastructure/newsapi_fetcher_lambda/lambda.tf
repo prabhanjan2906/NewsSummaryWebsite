@@ -1,6 +1,6 @@
 # Lambda function using python3.9
 resource "aws_lambda_function" "news_headlines" {
-  function_name = "news_headlines_function"
+  function_name = local.lambda_function_name
   filename = "${path.module}/lambda_news_api_fetcher.zip"
   handler  = "headlines_entry_point.handler"
   runtime       = "python3.9"
