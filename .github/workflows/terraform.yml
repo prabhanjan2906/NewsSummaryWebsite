@@ -112,6 +112,12 @@ jobs:
           **/.terraform/providers
         key: ${{ runner.os }}-tf-${{ hashFiles('**/.terraform.lock.hcl') }}
 
+    - name: Download Lambda zip artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: lambda_news_api_fetcher
+        path: infrastructure/newsapi_fetcher_lambda/
+        
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init
@@ -167,12 +173,6 @@ jobs:
       working-directory: ./infrastructure
       run: terraform validate
 
-    - name: Download Lambda zip artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: lambda_news_api_fetcher
-        path: infrastructure/newsapi_fetcher_lambda/
-        
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       working-directory: ./infrastructure
