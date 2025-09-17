@@ -5,6 +5,11 @@ module "lambda" {
   LANGUAGE     = var.LANGUAGE
 }
 
+module "consumer" {
+  source               = "./consumer"
+  newsapi_message_queue_arn = module.lambda.newsapi_message_queue_arn
+}
+
 output "newsapi_arn" {
   value = module.lambda.newsapi_fetcher_lambda_function_arn
 }

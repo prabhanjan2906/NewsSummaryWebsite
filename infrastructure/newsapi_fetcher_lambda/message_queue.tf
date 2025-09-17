@@ -37,3 +37,7 @@ resource "aws_iam_role_policy_attachment" "lambda_fetcher_can_send_messages_to_p
   role       = aws_iam_role.news_fetcher_exec.name
   policy_arn = aws_iam_policy.sqs_send.arn
 }
+
+output "newsapi_message_queue_arn" {
+  value = aws_sqs_queue.newsAPI_producer_queue.arn
+}
