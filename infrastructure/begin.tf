@@ -6,7 +6,7 @@ module "lambda" {
 }
 
 output "lambda_datasource_arn" {
-  value = module.lambda.lambda_datasource_arn
+  value = module.lambda.lambda_function_arn
 }
 
 output "lambda_function_ds" {
