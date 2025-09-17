@@ -37,6 +37,7 @@ resource "aws_lambda_function" "news_headlines" {
       NEWS_API_KEY = var.NEWS_API_KEY
       LANGUAGE     = var.LANGUAGE
       COUNTRY      = var.COUNTRY
+      NEWSAPI_OUTPUT_QUEUE_URL = aws_sqs_queue.newsAPI_producer_queue.url
     }
   }
 }

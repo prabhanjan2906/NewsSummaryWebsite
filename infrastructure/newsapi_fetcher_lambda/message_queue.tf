@@ -34,6 +34,6 @@ resource "aws_iam_policy" "sqs_send" {
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_fetcher_can_send_messages_to_producer_queue" {
-  role       = local.news_fetcher_exec_role_name
+  role       = aws_iam_role.news_fetcher_exec.name
   policy_arn = aws_iam_policy.sqs_send.arn
 }
