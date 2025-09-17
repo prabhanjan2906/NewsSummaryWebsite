@@ -1,10 +1,35 @@
+data "aws_iam_policy_document" "lambda_trust" {
+  statement {
+    effect = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type = "Service"
+      identifiers = ["lambda.amazonaws.com"] 
+    }
+  }
+}
+resource "aws_iam_role" "news_fetcher_exec" {
+  name               = local.news_fetcher_exec_role_name
+  assume_role_policy = data.aws_iam_policy_document.lambda_trust.json
+}
+
+data "aws_iam_policy" "lambda_basic_execution_role" {
+  name        = "AWSLambdaBasicExecutionRole"
+  path_prefix = "/service-role/"
+}
+
+resource "aws_iam_role_policy_attachment" "logs" {
+  role       = aws_iam_role.news_fetcher_exec.name
+  policy_arn = data.aws_iam_policy.lambda_basic_execution_role.arn
+}
+
 # Lambda function using python3.9
 resource "aws_lambda_function" "news_headlines" {
   function_name = local.lambda_function_name
   filename = "${path.module}/lambda_news_api_fetcher.zip"
   handler  = "headlines_entry_point.handler"
   runtime       = "python3.9"
-  role          = data.aws_iam_role.github_actions_role.arn
+  role          = aws_iam_role.news_fetcher_exec.arn
 
   environment {
     variables = {
