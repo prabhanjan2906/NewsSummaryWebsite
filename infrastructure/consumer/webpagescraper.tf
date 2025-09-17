@@ -46,3 +46,33 @@ resource "aws_iam_role_policy_attachment" "sqs_consume_attach" {
   role       = aws_iam_role.news_consumer_exec.name
   policy_arn = aws_iam_policy.sqs_consume.arn
 }
+
+resource "aws_lambda_function" "consumer_webscraper" {
+  function_name = "newsapi-url-webscraper"
+  role          = aws_iam_role.news_consumer_exec.arn
+  runtime       = "python3.9"
+  handler       = "webpagescraper_entrypoint.handler"
+  filename      = "${path.module}/lambda_newsurl_webpagescraper.zip"
+  source_code_hash = filebase64sha256("${path.module}/lambda_newsurl_webpagescraper.zip")
+
+  timeout     = 300
+  memory_size = 512
+
+  # Uncomment later after setting up VPC:
+  # vpc_config {
+  #   subnet_ids         = [aws_subnet.private_a.id, aws_subnet.private_b.id]
+  #   security_group_ids = [aws_security_group.lambda_vpc.id]
+  # }
+}
+
+resource "aws_lambda_event_source_mapping" "articles_to_consumer" {
+  event_source_arn = var.newsapi_message_queue_arn
+  function_name    = aws_lambda_function.consumer_webscraper.arn
+
+  # Small batches isolate failures & reduce re-drives
+  batch_size = 5
+  maximum_batching_window_in_seconds = 5  # small latency buffer
+
+  # Enable partial-batch failure reporting (recommended)
+  function_response_types = ["ReportBatchItemFailures"]
+}
