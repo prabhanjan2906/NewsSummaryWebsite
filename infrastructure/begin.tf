@@ -5,10 +5,6 @@ module "lambda" {
   LANGUAGE     = var.LANGUAGE
 }
 
-output "lambda_function_name" {
-  value = module.lambda.lambda_function_name
-}
-
 output "lambda_datasource_arn" {
   value = module.lambda.lambda_datasource_arn
 }
