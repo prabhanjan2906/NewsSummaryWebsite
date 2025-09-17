@@ -1,21 +1,42 @@
-data "aws_lambda_function" "headlines" {
-  function_name = local.lambda_function_name
+data "aws_iam_policy_document" "scheduler_trust" {
+  statement {
+    effect    = "Allow"
+    actions   = ["sts:AssumeRole"]
+    principals { 
+        type = "Service"
+        identifiers = ["scheduler.amazonaws.com"] 
+    }
+  }
+}
+resource "aws_iam_role" "newsapi_scheduler_invoke_role" {
+  name               = "newsapi-fetcher-scheduler-invoke-role"
+  assume_role_policy = data.aws_iam_policy_document.scheduler_trust.json
 }
 
-output "lambda_function_arn" {
-  value = data.aws_lambda_function.headlines.arn
+data "aws_iam_policy_document" "invoke_lambda" {
+  statement {
+    effect   = "Allow"
+    actions  = ["lambda:InvokeFunction"]
+    resources = [data.aws_lambda_function.headlines.arn]
+  }
+}
+resource "aws_iam_policy" "invoke_lambda" {
+  name   = "scheduler-invoke-policy-newsapi-fetcher"
+  policy = data.aws_iam_policy_document.invoke_lambda.json
 }
 
-output "headlines_lambda_function_name" {
-  value = data.aws_lambda_function.headlines 
+resource "aws_iam_role_policy_attachment" "invoke_attach" {
+  role       = aws_iam_role.newsapi_scheduler_invoke_role.name
+  policy_arn = aws_iam_policy.invoke_lambda.arn
 }
 
-data "aws_lambda_function" "headlinesinvalid" {
-  function_name = "invalid-function-name"
-}
-output "lambda_function_arn_invalid" {
-  value = data.aws_lambda_function.headlinesinvalid.arn
-}
-output "headlines_lambda_function_name_invalid" {
-  value = data.aws_lambda_function.headlinesinvalid
+resource "aws_scheduler_schedule" "newsapi_fetch_scheduler" {
+  name                = "newsapi_fetch_scheduler"
+  schedule_expression = local.lambda_schedule_rate
+  flexible_time_window { mode = "OFF" }
+
+  target {
+    arn      = data.aws_lambda_function.headlines.arn
+    role_arn = aws_iam_role.newsapi_scheduler_invoke_role.arn
+  }
 }
