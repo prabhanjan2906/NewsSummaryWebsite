@@ -11,7 +11,7 @@ resource "aws_sqs_queue" "newsAPI_producer_dlq" {
 
 resource "aws_sqs_queue" "newsAPI_producer_queue" {
   name                       = "newsAPI-producer-queue"
-  visibility_timeout_seconds = 120   # > consumer Lambda timeout
+  visibility_timeout_seconds = 301   # > consumer Lambda has 300 seconds timeout
   message_retention_seconds  = local.ONE_DAY * 4  # 4 days
 
   redrive_policy = jsonencode({
