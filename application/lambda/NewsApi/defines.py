@@ -28,7 +28,6 @@ def injectHeadLinesSpecific(func):
 def injectAPIKEY(func):
   def wrapper(*args, **kwargs):
     NEWS_API_KEY = os.environ.get("NEWS_API_KEY")
-    print(f"Using API Key: {NEWS_API_KEY}")
     return func(NEWS_API_KEY, *args, **kwargs)
   return wrapper
 
