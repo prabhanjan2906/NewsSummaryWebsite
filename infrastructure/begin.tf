@@ -10,7 +10,7 @@ output "lambda_function_name" {
 }
 
 output "lambda_datasource_arn" {
-  value = module.lambda.lambda_datasource_arn  
+  value = module.lambda.lambda_datasource_arn
 }
 
 output "lambda_function_ds" {
