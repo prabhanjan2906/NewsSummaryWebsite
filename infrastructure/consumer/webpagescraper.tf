@@ -52,8 +52,8 @@ resource "aws_lambda_function" "consumer_webscraper" {
   role          = aws_iam_role.news_consumer_exec.arn
   runtime       = "python3.9"
   handler       = "webpagescraper_entrypoint.handler"
-  filename      = "${path.module}/lambda_newsurl_webpagescraper.zip"
-  source_code_hash = filebase64sha256("${path.module}/lambda_newsurl_webpagescraper.zip")
+  filename      = "${path.module}/lambda_web_page_scraper.zip"
+  source_code_hash = filebase64sha256("${path.module}/lambda_web_page_scraper.zip")
 
   timeout     = 300
   memory_size = 512
