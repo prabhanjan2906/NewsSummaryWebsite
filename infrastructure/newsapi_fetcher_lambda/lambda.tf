@@ -31,6 +31,7 @@ resource "aws_lambda_function" "news_headlines" {
   runtime       = "python3.9"
   role          = aws_iam_role.news_fetcher_exec.arn
   source_code_hash = filebase64sha256("${path.module}/lambda_news_api_fetcher.zip")
+  timeout       = 300
 
   environment {
     variables = {
