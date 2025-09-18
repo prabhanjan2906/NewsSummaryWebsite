@@ -1,5 +1,7 @@
 from os import times
-
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), 'package'))
 import trafilatura
 from datetime import datetime, date
 
