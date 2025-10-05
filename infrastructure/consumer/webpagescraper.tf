@@ -47,6 +47,14 @@ resource "aws_iam_role_policy_attachment" "sqs_consume_attach" {
   policy_arn = aws_iam_policy.sqs_consume.arn
 }
 
+resource "aws_lambda_layer_version" "webpagescraper_python_dependency" {
+  layer_name          = "webpagescraper_python_dependency_installer"
+  filename            = "path/to/your/layer.zip" # Path to your zipped layer content
+  compatible_runtimes = ["bash"] # Specify compatible runtimes
+  source_code_hash    = filebase64sha256("path/to/your/layer.zip") # Important for detecting changes
+  description         = "My example Lambda Layer"
+}
+
 resource "aws_lambda_function" "consumer_webscraper" {
   function_name = "newsapi-url-webscraper"
   role          = aws_iam_role.news_consumer_exec.arn

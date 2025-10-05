@@ -1,12 +1,13 @@
 from os import times
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), 'package'))
+# sys.path.append(os.path.join(os.path.dirname(__file__), 'package'))
 import trafilatura
 from datetime import datetime, date
 
 def fetchWebpageArticle(anOBJ):
   aURL = anOBJ['url']
+  print(aURL)
 
   if 'publishedAt' not in anOBJ:
     anOBJ['publishedAt'] = date.today().strftime("%Y-%m-%d")
