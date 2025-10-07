@@ -215,6 +215,7 @@ jobs:
         TF_VAR_NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
         TF_VAR_COUNTRY: ${{ vars.COUNTRY }}
         TF_VAR_LANGUAGE: ${{ vars.LANGUAGE }}
+        TF_VAR_RAW_BUCKET: ${{ vars.RAW_BUCKET }}
         TF_VAR_ENVIRONMENT: ${{ github.job.environment }}
       run: terraform plan -out=tfplan -input=false
 
