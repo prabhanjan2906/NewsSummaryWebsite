@@ -78,13 +78,24 @@ jobs:
     - name: Create zip archive for webscraper lambda function
       run: |
         cd application/lambda/WebPageScraper
-        zip -r ../../../lambda_web_page_scraper.zip ./* -x "*.git*"
+        zip -r ../../../lambda_web_page_scraper.zip ./* -x "*.git*" "./python/*"
 
     - name: Upload artifact for webscraper
       uses: actions/upload-artifact@v4
       with:
         name: lambda_web_page_scraper
         path: lambda_web_page_scraper.zip
+
+    - name: Create zip archive for webscraper lambda layer
+      run: |
+        cd application/lambda/WebPageScraper
+        zip -r ../../../webpagescraper_python_dependency_layer.zip ./python -x "*.git*" 
+
+    - name: Upload artifact for webscraper
+      uses: actions/upload-artifact@v4
+      with:
+        name: webpagescraper_python_dependency_layer
+        path: webpagescraper_python_dependency_layer.zip
 
   terraform:
     name: 'Terraform'

@@ -49,10 +49,10 @@ resource "aws_iam_role_policy_attachment" "sqs_consume_attach" {
 
 resource "aws_lambda_layer_version" "webpagescraper_python_dependency" {
   layer_name          = "webpagescraper_python_dependency_installer"
-  filename            = "path/to/your/layer.zip" # Path to your zipped layer content
-  compatible_runtimes = ["bash"] # Specify compatible runtimes
-  source_code_hash    = filebase64sha256("path/to/your/layer.zip") # Important for detecting changes
-  description         = "My example Lambda Layer"
+  filename            = "${path.module}/webpagescraper_python_dependency_layer.zip"
+  compatible_runtimes = ["python3.9"] # Specify compatible runtimes
+  source_code_hash    = filebase64sha256("${path.module}/webpagescraper_python_dependency_layer.zip")
+  description         = "Lambda Layer for webscraper"
 }
 
 resource "aws_lambda_function" "consumer_webscraper" {
@@ -71,6 +71,7 @@ resource "aws_lambda_function" "consumer_webscraper" {
   #   subnet_ids         = [aws_subnet.private_a.id, aws_subnet.private_b.id]
   #   security_group_ids = [aws_security_group.lambda_vpc.id]
   # }
+  layers = [aws_lambda_layer_version.webpagescraper_python_dependency.arn]
 }
 
 resource "aws_lambda_event_source_mapping" "articles_to_consumer" {
