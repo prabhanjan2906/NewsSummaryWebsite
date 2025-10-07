@@ -163,6 +163,11 @@ jobs:
         echo "RAW_BUCKET= \"${{ env.RAW_BUCKET }}\"" >> terraform.tfvars
         echo "ENVIRONMENT= \"${{ github.job.environment }}\"" >> terraform.tfvars
 
+    # properly format terraform.tfvars file generated above
+    - name: Terraform Format terraform.tfvars
+      working-directory: ./infrastructure
+      run: terraform fmt terraform.tfvars
+
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init
