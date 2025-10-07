@@ -221,7 +221,7 @@ jobs:
     # validates Terraform
     - name: Terraform Validate
       working-directory: ./infrastructure
-      run: terraform validate
+      run: terraform validate -var-file="terraform.tfvars"
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
