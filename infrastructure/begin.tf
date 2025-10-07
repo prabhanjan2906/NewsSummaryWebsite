@@ -8,6 +8,7 @@ module "lambda" {
 module "consumer" {
   source                    = "./consumer"
   newsapi_message_queue_arn = module.lambda.newsapi_message_queue_arn
+  RAW_BUCKET                = var.RAW_BUCKET
 }
 
 output "newsapi_arn" {

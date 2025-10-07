@@ -208,16 +208,26 @@ jobs:
       working-directory: ./infrastructure
       run: terraform validate
 
+    # Generates an tfvar file for Terraform
+    - name: Create terraform.tfvars
+      working-directory: ./infrastructure
+      run: |
+        echo "NEWS_API_KEY = \"${{ secrets.NEWS_API_KEY }}\"" > terraform.tfvars
+        echo "COUNTRY= \"${{ env.COUNTRY }}\"" >> terraform.tfvars
+        echo "LANGUAGE= \"${{ env.LANGUAGE }}\"" >> terraform.tfvars
+        echo "RAW_BUCKET= \"${{ env.RAW_BUCKET }}\"" >> terraform.tfvars
+        echo "ENVIRONMENT= \"${{ github.job.environment }}\"" >> terraform.tfvars
+
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       working-directory: ./infrastructure
-      env:
-        TF_VAR_NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
-        TF_VAR_COUNTRY: ${{ vars.COUNTRY }}
-        TF_VAR_LANGUAGE: ${{ vars.LANGUAGE }}
-        TF_VAR_RAW_BUCKET: ${{ vars.RAW_BUCKET }}
-        TF_VAR_ENVIRONMENT: ${{ github.job.environment }}
-      run: terraform plan -out=tfplan -input=false
+      # env:
+        # TF_VAR_NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+        # TF_VAR_COUNTRY: ${{ vars.COUNTRY }}
+        # TF_VAR_LANGUAGE: ${{ vars.LANGUAGE }}
+        # TF_VAR_RAW_BUCKET: ${{ vars.RAW_BUCKET }}
+        # TF_VAR_ENVIRONMENT: ${{ github.job.environment }}
+      run: terraform plan -out=tfplan -input=false -var-file="terraform.tfvars"
 
       # On push to "develop", build or change infrastructure according to Terraform configuration files
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
@@ -226,9 +236,9 @@ jobs:
       # if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
       if: github.event_name == 'push'
       env:
-        TF_VAR_NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
-        TF_VAR_COUNTRY: ${{ vars.COUNTRY }}
-        TF_VAR_LANGUAGE: ${{ vars.LANGUAGE }}
-        TF_VAR_RAW_BUCKET: ${{ vars.RAW_BUCKET }}
-        TF_VAR_ENVIRONMENT: ${{ github.job.environment }}
-      run: terraform apply -auto-approve -input=false tfplan
+        # TF_VAR_NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+        # TF_VAR_COUNTRY: ${{ vars.COUNTRY }}
+        # TF_VAR_LANGUAGE: ${{ vars.LANGUAGE }}
+        # TF_VAR_RAW_BUCKET: ${{ vars.RAW_BUCKET }}
+        # TF_VAR_ENVIRONMENT: ${{ github.job.environment }}
+      run: terraform apply -auto-approve -input=false tfplan -var-file="terraform.tfvars"

@@ -71,6 +71,12 @@ resource "aws_lambda_function" "consumer_webscraper" {
   #   subnet_ids         = [aws_subnet.private_a.id, aws_subnet.private_b.id]
   #   security_group_ids = [aws_security_group.lambda_vpc.id]
   # }
+    environment {
+    variables = {
+      ENVIRONMENT  = "development"
+      COUNTRY      = var.COUNTRY
+    }
+  }
   layers = [aws_lambda_layer_version.webpagescraper_python_dependency.arn]
 }
 
