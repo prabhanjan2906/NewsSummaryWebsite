@@ -147,6 +147,12 @@ jobs:
         name: lambda_web_page_scraper
         path: infrastructure/consumer/
 
+    - name: Download Lambda zip artifact for lambda layer
+      uses: actions/download-artifact@v4
+      with:
+        name: webpagescraper_python_dependency_layer
+        path: infrastructure/consumer/
+
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init
