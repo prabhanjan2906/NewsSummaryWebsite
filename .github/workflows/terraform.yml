@@ -158,9 +158,9 @@ jobs:
       working-directory: ./infrastructure
       run: |
         echo "NEWS_API_KEY = \"${{ secrets.NEWS_API_KEY }}\"" > terraform.tfvars
-        echo "COUNTRY= \"${{ env.COUNTRY }}\"" >> terraform.tfvars
-        echo "LANGUAGE= \"${{ env.LANGUAGE }}\"" >> terraform.tfvars
-        echo "RAW_BUCKET= \"${{ env.RAW_BUCKET }}\"" >> terraform.tfvars
+        echo "COUNTRY= \"${{ vars.COUNTRY }}\"" >> terraform.tfvars
+        echo "LANGUAGE= \"${{ vars.LANGUAGE }}\"" >> terraform.tfvars
+        echo "RAW_BUCKET= \"${{ vars.RAW_BUCKET }}\"" >> terraform.tfvars
         echo "ENVIRONMENT= \"${{ github.job.environment }}\"" >> terraform.tfvars
 
     # properly format terraform.tfvars file generated above
