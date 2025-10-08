@@ -1,1 +1,0 @@
-newsapi_fetcher_lambda/variables.tf

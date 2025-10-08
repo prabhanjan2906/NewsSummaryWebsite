@@ -74,7 +74,7 @@ resource "aws_lambda_function" "consumer_webscraper" {
     environment {
     variables = {
       ENVIRONMENT  = "development"
-      COUNTRY      = var.COUNTRY
+      RAW_BUCKET      = var.RAW_BUCKET
     }
   }
   layers = [aws_lambda_layer_version.webpagescraper_python_dependency.arn]
