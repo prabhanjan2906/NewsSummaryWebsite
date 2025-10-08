@@ -246,4 +246,4 @@ jobs:
         # TF_VAR_LANGUAGE: ${{ vars.LANGUAGE }}
         # TF_VAR_RAW_BUCKET: ${{ vars.RAW_BUCKET }}
         # TF_VAR_ENVIRONMENT: ${{ github.job.environment }}
-      run: terraform apply -auto-approve -input=false tfplan -var-file="terraform.tfvars"
+      run: terraform apply -auto-approve -input=false tfplan
