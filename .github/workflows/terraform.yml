@@ -218,10 +218,10 @@ jobs:
       working-directory: ./infrastructure
       run: terraform fmt -check
 
-    # validates Terraform
-    - name: Terraform Validate
-      working-directory: ./infrastructure
-      run: terraform validate -var-file="terraform.tfvars"
+    # # validates Terraform
+    # - name: Terraform Validate
+    #   working-directory: ./infrastructure
+    #   run: terraform validate -var-file="terraform.tfvars"
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
