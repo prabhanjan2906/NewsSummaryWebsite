@@ -1,7 +1,4 @@
 from os import times
-import sys
-import os
-# sys.path.append(os.path.join(os.path.dirname(__file__), 'package'))
 import trafilatura
 from datetime import datetime, date
 
@@ -24,7 +21,7 @@ def fetchWebpageArticle(anOBJ):
       return None
   return anOBJ
 
-def getRequiredFormat(aggregate, aData):
+def getRequiredFormat(aData):
   if not (aData == None):
     reqdObj = {}
     reqdObj.update(url=aData.get('url'),
@@ -32,5 +29,4 @@ def getRequiredFormat(aggregate, aData):
                   publishedAt=aData.get('publishedAt'),
                   text=aData.get('text')
                   )
-    aggregate.append(reqdObj)
-  return aggregate
+  return reqdObj

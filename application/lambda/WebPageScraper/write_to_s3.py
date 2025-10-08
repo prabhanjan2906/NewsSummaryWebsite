@@ -1,11 +1,7 @@
 from logging import log
-import os
-import sys, json
-import boto3
-sys.path.append(os.path.join(os.getcwd(), 'package'))
+import json
+import config
 
-s3 = boto3.client("s3")
-RAW_BUCKET = os.environ["RAW_BUCKET"]
-
+@config.config
 def writeData(jsondata):
-    pass
+    writeData.s3_client.put_object(Bucket=config.get_bucketname(), Key=config.get_unique_key(), Body=json.dumps(jsondata))

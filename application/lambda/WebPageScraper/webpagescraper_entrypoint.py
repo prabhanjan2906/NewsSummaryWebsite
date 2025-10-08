@@ -3,6 +3,7 @@ import sys
 import subprocess
 from logging import log
 import json
+import write_to_s3
 
 # pip install custom package to /tmp/ and add to path
 subprocess.call('pip install -r requirements.txt -t /tmp/ --no-cache-dir'.split(), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -13,10 +14,6 @@ def installdependencies():
     os.system('pip install trafilatura -t /tmp')
 
 def handler(event, context):
-    # installdependencies()
-    return handler2(event, context)
-
-def handler2(event, context):
     import webscraper
     failures = []
     for record in event["Records"]:
@@ -25,9 +22,10 @@ def handler2(event, context):
             body = json.loads(record["body"])
             print(body)
             data = webscraper.fetchWebpageArticle(body)
-            # if data:
-            #     write_to_s3.writeData(data)
-            print(data)
+            if data:
+                write_to_s3.writeData(
+                    webscraper.fetchWebpageArticle(data)
+                )
                 
         except Exception as e:
             print(f"Failed to process messageId={msg_id}")
