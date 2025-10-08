@@ -1,10 +1,10 @@
 data "aws_iam_policy_document" "consumer_lambda_trust" {
   statement {
-    effect = "Allow"
+    effect  = "Allow"
     actions = ["sts:AssumeRole"]
-    principals { 
-        type = "Service"
-        identifiers = ["lambda.amazonaws.com"]
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
     }
   }
 }
@@ -26,7 +26,7 @@ resource "aws_iam_role_policy_attachment" "consumer_policy_attach" {
 
 data "aws_iam_policy_document" "sqs_consume" {
   statement {
-    effect  = "Allow"
+    effect = "Allow"
     actions = [
       "sqs:ReceiveMessage",
       "sqs:DeleteMessage",
@@ -56,11 +56,11 @@ resource "aws_lambda_layer_version" "webpagescraper_python_dependency" {
 }
 
 resource "aws_lambda_function" "consumer_webscraper" {
-  function_name = "newsapi-url-webscraper"
-  role          = aws_iam_role.news_consumer_exec.arn
-  runtime       = "python3.9"
-  handler       = "webpagescraper_entrypoint.handler"
-  filename      = "${path.module}/lambda_web_page_scraper.zip"
+  function_name    = "newsapi-url-webscraper"
+  role             = aws_iam_role.news_consumer_exec.arn
+  runtime          = "python3.9"
+  handler          = "webpagescraper_entrypoint.handler"
+  filename         = "${path.module}/lambda_web_page_scraper.zip"
   source_code_hash = filebase64sha256("${path.module}/lambda_web_page_scraper.zip")
 
   timeout     = 300
@@ -71,10 +71,10 @@ resource "aws_lambda_function" "consumer_webscraper" {
   #   subnet_ids         = [aws_subnet.private_a.id, aws_subnet.private_b.id]
   #   security_group_ids = [aws_security_group.lambda_vpc.id]
   # }
-    environment {
+  environment {
     variables = {
-      ENVIRONMENT  = "development"
-      RAW_BUCKET      = var.RAW_BUCKET
+      ENVIRONMENT = "development"
+      RAW_BUCKET  = var.RAW_BUCKET
     }
   }
   layers = [aws_lambda_layer_version.webpagescraper_python_dependency.arn]
@@ -85,8 +85,8 @@ resource "aws_lambda_event_source_mapping" "articles_to_consumer" {
   function_name    = aws_lambda_function.consumer_webscraper.arn
 
   # Small batches isolate failures & reduce re-drives
-  batch_size = 5
-  maximum_batching_window_in_seconds = 5  # small latency buffer
+  batch_size                         = 5
+  maximum_batching_window_in_seconds = 5 # small latency buffer
 
   # Enable partial-batch failure reporting (recommended)
   function_response_types = ["ReportBatchItemFailures"]
