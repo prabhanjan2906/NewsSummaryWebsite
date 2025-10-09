@@ -211,17 +211,12 @@ jobs:
     - name: Terraform Plan For Creation of State Storage Resources
       if: ${{ steps.init.outcome == 'failure' }}
       working-directory: ./infrastructure_tf_state
-      run: terraform plan -out=tfplan -input=false
-
-    - name: Terraform apply For Creation of State Storage Resources
-      if: ${{ steps.init.outcome == 'failure' }}
-      working-directory: ./infrastructure_tf_state
-      run: terraform plan -out=tfplan -input=false
+      run: terraform plan -out=tfplan -input=false -var "REGION=${{ vars.REGION }}"
       
     - name: Terraform apply For Creation of State Storage Resources
       if: ${{ steps.init.outcome == 'failure' }}
       working-directory: ./infrastructure_tf_state
-      run: terraform apply -auto-approve -input=false tfplan
+      run: terraform apply -auto-approve -input=false tfplan -var "REGION=${{ vars.REGION }}"
 
     - name: Terraform Init Again
       if: ${{ steps.init.outcome == 'failure' }}
