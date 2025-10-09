@@ -216,7 +216,7 @@ jobs:
       continue-on-error: true
       working-directory: ./infrastructure_tf_state
       if: ${{ steps.init.outcome == 'failure' }}
-      run: terraform import aws_s3_bucket.tf_state ${{ vars.TERRAFORM_STATE_STORAGE_BUCKET_NAME }}
+      run: terraform import terraform.aws_s3_bucket.tf_state ${{ vars.TERRAFORM_STATE_STORAGE_BUCKET_NAME }}
 
     - name: Terraform Plan For Creation of State Storage Resources
       if: ${{ steps.init.outcome == 'failure' && steps.tf_state_bucket_import.outcome == 'failure' }}"
