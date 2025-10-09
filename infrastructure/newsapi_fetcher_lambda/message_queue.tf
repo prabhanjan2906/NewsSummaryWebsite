@@ -11,7 +11,7 @@ resource "aws_sqs_queue" "newsAPI_producer_dlq" {
 
 resource "aws_sqs_queue" "newsAPI_producer_queue" {
   name                       = "newsAPI-producer-queue"
-  visibility_timeout_seconds = 120   # > consumer Lambda timeout
+  visibility_timeout_seconds = 301   # > consumer Lambda has 300 seconds timeout
   message_retention_seconds  = local.ONE_DAY * 4  # 4 days
 
   redrive_policy = jsonencode({
@@ -36,4 +36,8 @@ resource "aws_iam_policy" "sqs_send" {
 resource "aws_iam_role_policy_attachment" "lambda_fetcher_can_send_messages_to_producer_queue" {
   role       = aws_iam_role.news_fetcher_exec.name
   policy_arn = aws_iam_policy.sqs_send.arn
+}
+
+output "newsapi_message_queue_arn" {
+  value = aws_sqs_queue.newsAPI_producer_queue.arn
 }
