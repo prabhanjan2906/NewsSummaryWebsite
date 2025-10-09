@@ -50,7 +50,7 @@ resource "aws_iam_role_policy_attachment" "sqs_consume_attach" {
 resource "aws_lambda_layer_version" "webpagescraper_python_dependency" {
   layer_name          = "webpagescraper_python_dependency_installer"
   filename            = "${path.module}/webpagescraper_python_dependency_layer.zip"
-  compatible_runtimes = ["python3.9"] # Specify compatible runtimes
+  compatible_runtimes = [var.python_version_for_lambda]
   source_code_hash    = filebase64sha256("${path.module}/webpagescraper_python_dependency_layer.zip")
   description         = "Lambda Layer for webscraper"
 }
@@ -58,7 +58,7 @@ resource "aws_lambda_layer_version" "webpagescraper_python_dependency" {
 resource "aws_lambda_function" "consumer_webscraper" {
   function_name    = "newsapi-url-webscraper"
   role             = aws_iam_role.news_consumer_exec.arn
-  runtime          = "python3.9"
+  runtime          = var.python_version_for_lambda
   handler          = "webpagescraper_entrypoint.handler"
   filename         = "${path.module}/lambda_web_page_scraper.zip"
   source_code_hash = filebase64sha256("${path.module}/lambda_web_page_scraper.zip")
@@ -73,8 +73,9 @@ resource "aws_lambda_function" "consumer_webscraper" {
   # }
   environment {
     variables = {
-      ENVIRONMENT = "development"
+      ENVIRONMENT = var.ENVIRONMENT
       RAW_BUCKET  = var.RAW_BUCKET
+      PREFIX_KEY = var.RAW_BUCKET_INPUT_KEY
     }
   }
   layers = [aws_lambda_layer_version.webpagescraper_python_dependency.arn]

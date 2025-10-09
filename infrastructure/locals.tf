@@ -1,3 +1,4 @@
 locals {
-  region = "us-east-2"
+  region = var.REGION
+  python_version = "python3.9"
 }

@@ -7,3 +7,8 @@ variable "ENVIRONMENT" {
   description = "Target environment to run"
   type        = string
 }
+
+variable "RAW_BUCKET_INPUT_KEY" {
+  description = "prefix key to store the raw json data"
+  type        = string
+}

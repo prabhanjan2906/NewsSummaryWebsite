@@ -3,7 +3,8 @@ import os, sys, uuid
 app_config = {
     "region" : os.environ.get("AWS_REGION"),
     "bucket_name" : os.environ.get("RAW_BUCKET"),
-    "key" : 'raw/'
+    # "key" : 'raw/'
+    "key" : str(os.environ.get("PREFIX_KEY")) + "/"
 }
 
 def get_bucketname():
