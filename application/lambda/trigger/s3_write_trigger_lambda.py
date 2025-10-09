@@ -2,6 +2,7 @@ import urllib
 import config
 import s3_handler
 import news_article_processor
+import json
 
 def handler(event, context):
     print(event)
@@ -16,8 +17,11 @@ def handler(event, context):
 
         # Read input JSON (as text)
         payload = s3_handler.read_from_s3(bucket, key)
+        print("--------------------------------")
+        print(payload)
+        print("--------------------------------")
 
-        news_article_processor.generate_summary_and_topics(payload)
+        news_article_processor.generate_summary_and_topics(json.loads(payload))
         # output_text = "".join(p["text"] for p in out["output"]["message"]["content"])
 
         # # Write to processed/ with same file name after the prefix

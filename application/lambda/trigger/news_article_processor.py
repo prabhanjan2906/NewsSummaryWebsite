@@ -30,7 +30,7 @@ def generate_summary_and_topics(payload):
         modelId=bedrock_config.get_model_id(),
         messages=[{
             "role": converse_model_role,
-            "content":[{"text": f"{TASK_PROMPT}\n\nINPUT NEWS ARTICLE:\n{payload}"}]
+            "content":[{"text": f"{TASK_PROMPT}\n\nINPUT NEWS ARTICLE:\n{text}"}]
         }],
         inferenceConfig={"maxTokens": 1024, "temperature": 0.2}
     )
