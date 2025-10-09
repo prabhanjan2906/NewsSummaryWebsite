@@ -21,10 +21,10 @@ resource "aws_iam_role_policy" "lambda_policy" {
     Statement = [
       { Sid    = "S3Read", Effect = "Allow",
         Action = ["s3:GetObject"],
-      Resource = "arn:aws:s3:::${var.RAW_BUCKET}/incoming/*" },
+      Resource = "arn:aws:s3:::${var.RAW_BUCKET}/${var.RAW_BUCKET_INPUT_KEY}/*" },
       { Sid    = "S3Write", Effect = "Allow",
         Action = ["s3:PutObject"],
-      Resource = "arn:aws:s3:::${var.RAW_BUCKET}/processed/*" },
+      Resource = "arn:aws:s3:::${var.RAW_BUCKET}/${var.RAW_BUCKET_OUTPUT_KEY}/*" },
       { Sid = "Bedrock", Effect = "Allow",
         Action = [
           "bedrock:Converse", "bedrock:ConverseStream",
