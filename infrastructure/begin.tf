@@ -21,7 +21,7 @@ module "s3_write_trigger" {
   RAW_BUCKET                              = var.RAW_BUCKET
   ENVIRONMENT                             = var.ENVIRONMENT
   REGION                                  = local.region
-  python_version_for_lambda               = local.python_version
+  python_version_for_lambda               = "python3.9"
   RAW_BUCKET_INPUT_KEY                    = var.RAW_BUCKET_INPUT_KEY
   RAW_BUCKET_OUTPUT_KEY                   = var.RAW_BUCKET_OUTPUT_KEY
 }
