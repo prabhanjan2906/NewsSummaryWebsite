@@ -1,2 +1,3 @@
 def handler(event, context):
-    pass
+    print(event)
+    print(context)

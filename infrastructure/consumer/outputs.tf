@@ -5,3 +5,7 @@ output "python_dependency_layer_arn" {
 output "raw_data_storage_for_webpage_scraper_id" {
   value = aws_s3_bucket.raw_data_storage_for_webpage_scraper.id
 }
+
+output "raw_data_storage_for_webpage_scraper_arn" {
+  value = aws_s3_bucket.raw_data_storage_for_webpage_scraper.arn
+}

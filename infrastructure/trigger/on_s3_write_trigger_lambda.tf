@@ -75,5 +75,5 @@ resource "aws_lambda_permission" "allow_s3" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.processor.function_name
   principal     = "s3.amazonaws.com"
-  source_arn    = var.raw_data_storage_for_webpage_scraper_id
+  source_arn    = var.raw_data_storage_for_webpage_scraper_arn
 }
