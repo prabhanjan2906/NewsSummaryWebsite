@@ -133,7 +133,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v3
       with:
         role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }} # ARN of the role to assume. Copy from AWS IAM console and add it in github secrets manually.
-        aws-region: us-east-2
+        aws-region: ${{ vars.REGION }}
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
@@ -183,12 +183,19 @@ jobs:
         echo "REGION= \"${{ vars.REGION }}\"" >> terraform.tfvars
         echo "RAW_BUCKET_INPUT_KEY= \"${{ vars.RAW_BUCKET_INPUT_KEY }}\"" >> terraform.tfvars
         echo "RAW_BUCKET_OUTPUT_KEY= \"${{ vars.RAW_BUCKET_OUTPUT_KEY }}\"" >> terraform.tfvars
+        echo "MODEL_ID= \"${{ vars.MODEL_ID }}\"" >> terraform.tfvars
         echo "ENVIRONMENT= \"$DEPLOY_ENV\"" >> terraform.tfvars
 
     # properly format terraform.tfvars file generated above
     - name: Terraform Format terraform.tfvars
       working-directory: ./infrastructure
       run: terraform fmt terraform.tfvars
+
+    - name: replace region name in backend.hcl
+      working-directory: ./infrastructure
+      run: |
+        sed -i "s|__REGION__|${{ vars.REGION }}|g" "backend.hcl"
+        cat backend.hcl
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init

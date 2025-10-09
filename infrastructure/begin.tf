@@ -25,6 +25,7 @@ module "s3_write_trigger" {
   python_version_for_lambda                = local.python_version
   RAW_BUCKET_INPUT_KEY                     = var.RAW_BUCKET_INPUT_KEY
   RAW_BUCKET_OUTPUT_KEY                    = var.RAW_BUCKET_OUTPUT_KEY
+  MODEL_ID                                 = var.MODEL_ID
 }
 
 output "newsapi_arn" {
