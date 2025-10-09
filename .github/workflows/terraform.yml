@@ -209,7 +209,7 @@ jobs:
     - name: Initialize Terraform for bootstrapping state storage resources
       working-directory: ./infrastructure_tf_state
       if: ${{ steps.init.outcome == 'failure' }}
-      run: terraform init -backend-config="region=${{ vars.REGION }}" -var "REGION=${{ vars.REGION }}"
+      run: terraform init -backend-config="region=us-east-2" -var "REGION=${{ vars.REGION }}"
 
     - name: Import S3 bucket of terraform state store
       id: tf_state_bucket_import
@@ -219,7 +219,7 @@ jobs:
       run: terraform import aws_s3_bucket.tf_state ${{ vars.TERRAFORM_STATE_STORAGE_BUCKET_NAME }}
 
     - name: Terraform Plan For Creation of State Storage Resources
-      if: ${{ always() && steps.init.outcome == 'failure' && steps.tf_state_bucket_import.outcome == 'failure' }}"
+      if: ${{ steps.init.outcome == 'failure' && steps.tf_state_bucket_import.outcome == 'failure' }}"
       working-directory: ./infrastructure_tf_state
       run: terraform plan -out=tfplan -input=false -var "REGION=${{ vars.REGION }}"
       
