@@ -20,12 +20,9 @@ def handler(event, context):
         msg_id = record["messageId"]
         try:
             body = json.loads(record["body"])
-            print(body)
             data = webscraper.fetchWebpageArticle(body)
             if data:
-                write_to_s3.writeData(
-                    webscraper.fetchWebpageArticle(data)
-                )
+                write_to_s3.writeData(data)
                 
         except Exception as e:
             print(f"Failed to process messageId={msg_id}")
