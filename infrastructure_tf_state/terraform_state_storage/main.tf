@@ -1,4 +1,5 @@
 resource "aws_s3_bucket" "tf_state" {
+  provider = aws.use2
   bucket = var.state_bucket_name
 }
 
