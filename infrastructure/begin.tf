@@ -29,3 +29,7 @@ module "s3_write_trigger" {
 output "newsapi_arn" {
   value = module.lambda.newsapi_fetcher_lambda_function_arn
 }
+
+output "debugvaluie" {
+  value = local.python_version
+}

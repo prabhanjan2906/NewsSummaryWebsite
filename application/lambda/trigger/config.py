@@ -21,7 +21,7 @@ def setup_bedrock_client():
     if pth not in sys.path:
         sys.path.insert(0, pth)
     import boto3
-    return boto3.client("bedrock", region_name=app_config.get('region'))
+    return boto3.client("bedrock-runtime", region_name=app_config.get('region'))
 
 def config(func):
     bedrock_client = setup_bedrock_client()

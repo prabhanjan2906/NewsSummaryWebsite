@@ -50,7 +50,7 @@ resource "aws_lambda_function" "processor" {
 
   environment {
     variables = {
-      AWS_REGION = var.REGION
+      REGION = var.REGION
       # MODEL_ID      = var.model_id
       INPUT_PREFIX  = var.RAW_BUCKET_INPUT_KEY
       OUTPUT_PREFIX = var.RAW_BUCKET_OUTPUT_KEY
