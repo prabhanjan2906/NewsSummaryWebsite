@@ -1,4 +1,4 @@
 locals {
-  region = var.REGION
+  region         = var.REGION
   python_version = "python3.9"
 }

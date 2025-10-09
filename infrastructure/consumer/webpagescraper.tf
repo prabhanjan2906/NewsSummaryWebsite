@@ -75,7 +75,7 @@ resource "aws_lambda_function" "consumer_webscraper" {
     variables = {
       ENVIRONMENT = var.ENVIRONMENT
       RAW_BUCKET  = var.RAW_BUCKET
-      PREFIX_KEY = var.RAW_BUCKET_INPUT_KEY
+      PREFIX_KEY  = var.RAW_BUCKET_INPUT_KEY
     }
   }
   layers = [aws_lambda_layer_version.webpagescraper_python_dependency.arn]

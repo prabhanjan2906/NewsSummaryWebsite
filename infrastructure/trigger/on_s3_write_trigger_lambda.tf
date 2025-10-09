@@ -2,10 +2,10 @@ data "aws_iam_policy_document" "lambda_trust" {
   statement {
     effect  = "Allow"
     actions = ["sts:AssumeRole"]
-    principals { 
-        type = "Service"
-        identifiers = ["lambda.amazonaws.com"] 
-        }
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
   }
 }
 
@@ -19,38 +19,38 @@ resource "aws_iam_role_policy" "lambda_policy" {
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
-      { Sid="S3Read", Effect="Allow",
-        Action=["s3:GetObject"],
-        Resource="arn:aws:s3:::${var.RAW_BUCKET}/incoming/*" },
-      { Sid="S3Write", Effect="Allow",
-        Action=["s3:PutObject"],
-        Resource="arn:aws:s3:::${var.RAW_BUCKET}/processed/*" },
-      { Sid="Bedrock", Effect="Allow",
-        Action=[
-          "bedrock:Converse","bedrock:ConverseStream",
-          "bedrock:InvokeModel","bedrock:InvokeModelWithResponseStream"
+      { Sid    = "S3Read", Effect = "Allow",
+        Action = ["s3:GetObject"],
+      Resource = "arn:aws:s3:::${var.RAW_BUCKET}/incoming/*" },
+      { Sid    = "S3Write", Effect = "Allow",
+        Action = ["s3:PutObject"],
+      Resource = "arn:aws:s3:::${var.RAW_BUCKET}/processed/*" },
+      { Sid = "Bedrock", Effect = "Allow",
+        Action = [
+          "bedrock:Converse", "bedrock:ConverseStream",
+          "bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"
         ],
-        Resource="*" },
-      { Sid="Logs", Effect="Allow",
-        Action=["logs:CreateLogGroup","logs:CreateLogStream","logs:PutLogEvents"],
-        Resource="*" }
+      Resource = "*" },
+      { Sid    = "Logs", Effect = "Allow",
+        Action = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"],
+      Resource = "*" }
     ]
   })
 }
 
 resource "aws_lambda_function" "processor" {
-  function_name = "s3-to-bedrock"
-  role          = aws_iam_role.lambda_exec.arn
-  handler       = "s3_write_trigger_lambda.handler"
-  runtime       = var.python_version_for_lambda
+  function_name    = "s3-to-bedrock"
+  role             = aws_iam_role.lambda_exec.arn
+  handler          = "s3_write_trigger_lambda.handler"
+  runtime          = var.python_version_for_lambda
   filename         = "${path.module}/trigger.zip"
   source_code_hash = filebase64sha256("${path.module}/trigger.zip")
-  timeout       = 300
-  memory_size = 512
+  timeout          = 300
+  memory_size      = 512
 
   environment {
     variables = {
-      AWS_REGION    = var.REGION
+      AWS_REGION = var.REGION
       # MODEL_ID      = var.model_id
       INPUT_PREFIX  = var.RAW_BUCKET_INPUT_KEY
       OUTPUT_PREFIX = var.RAW_BUCKET_OUTPUT_KEY

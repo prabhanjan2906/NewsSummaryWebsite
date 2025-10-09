@@ -4,8 +4,8 @@ locals {
 
 data "aws_iam_policy_document" "s3_write" {
   statement {
-    sid     = "S3WriteObjects"
-    effect  = "Allow"
+    sid    = "S3WriteObjects"
+    effect = "Allow"
     actions = [
       "s3:PutObject",
       "s3:PutObjectTagging",
@@ -18,8 +18,8 @@ data "aws_iam_policy_document" "s3_write" {
   }
 
   statement {
-    sid     = "S3BucketMeta"
-    effect  = "Allow"
+    sid    = "S3BucketMeta"
+    effect = "Allow"
     actions = [
       "s3:GetBucketLocation",
       "s3:ListBucket",

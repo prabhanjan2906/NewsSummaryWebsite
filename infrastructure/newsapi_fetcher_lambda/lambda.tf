@@ -1,10 +1,10 @@
 data "aws_iam_policy_document" "lambda_trust" {
   statement {
-    effect = "Allow"
+    effect  = "Allow"
     actions = ["sts:AssumeRole"]
     principals {
-      type = "Service"
-      identifiers = ["lambda.amazonaws.com"] 
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
     }
   }
 }
@@ -25,20 +25,20 @@ resource "aws_iam_role_policy_attachment" "logs" {
 
 # Lambda function using python3.9
 resource "aws_lambda_function" "news_headlines" {
-  function_name = local.lambda_function_name
-  filename = "${path.module}/lambda_news_api_fetcher.zip"
-  handler  = "headlines_entry_point.handler"
-  runtime       = "python3.9"
-  role          = aws_iam_role.news_fetcher_exec.arn
+  function_name    = local.lambda_function_name
+  filename         = "${path.module}/lambda_news_api_fetcher.zip"
+  handler          = "headlines_entry_point.handler"
+  runtime          = "python3.9"
+  role             = aws_iam_role.news_fetcher_exec.arn
   source_code_hash = filebase64sha256("${path.module}/lambda_news_api_fetcher.zip")
-  timeout       = 300
+  timeout          = 300
 
   environment {
     variables = {
-      ENVIRONMENT  = "development"
-      NEWS_API_KEY = var.NEWS_API_KEY
-      LANGUAGE     = var.LANGUAGE
-      COUNTRY      = var.COUNTRY
+      ENVIRONMENT              = "development"
+      NEWS_API_KEY             = var.NEWS_API_KEY
+      LANGUAGE                 = var.LANGUAGE
+      COUNTRY                  = var.COUNTRY
       NEWSAPI_OUTPUT_QUEUE_URL = aws_sqs_queue.newsAPI_producer_queue.url
     }
   }
