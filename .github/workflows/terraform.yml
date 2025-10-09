@@ -117,6 +117,7 @@ jobs:
     environment: ${{ github.ref_name == 'master' && 'production' || 'development' }}
     env:
       DEPLOY_ENV: ${{ github.ref_name == 'master' && 'production' || 'development' }}
+      TF_STATE_PATH_ENV: ${{ vars.REGION == 'us-east-2' && 'prod' || vars.REGION}}
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -195,6 +196,8 @@ jobs:
       working-directory: ./infrastructure
       run: |
         sed -i "s|__REGION__|${{ vars.REGION }}|g" "backend.hcl"
+        sed -i "s|__ENV__|$TF_STATE_PATH_ENV|g" "backend.hcl"
+        cat backend.hcl
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
@@ -208,18 +211,25 @@ jobs:
       if: ${{ steps.init.outcome == 'failure' }}
       run: terraform init -backend-config="region=${{ vars.REGION }}" -var "REGION=${{ vars.REGION }}"
 
-    - name: Terraform Plan For Creation of State Storage Resources
+    - name: Import S3 bucket of terraform state store
+      id: tf_state_bucket_import
+      continue-on-error: true
+      working-directory: ./infrastructure_tf_state
       if: ${{ steps.init.outcome == 'failure' }}
+      run: terraform import aws_s3_bucket.tf_state ${{ vars.TERRAFORM_STATE_STORAGE_BUCKET_NAME }}
+
+    - name: Terraform Plan For Creation of State Storage Resources
+      if: ${{ always() && steps.init.outcome == 'failure' && steps.tf_state_bucket_import.outcome == 'failure' }}"
       working-directory: ./infrastructure_tf_state
       run: terraform plan -out=tfplan -input=false -var "REGION=${{ vars.REGION }}"
       
     - name: Terraform apply For Creation of State Storage Resources
-      if: ${{ steps.init.outcome == 'failure' }}
+      if: ${{ steps.init.outcome == 'failure' && steps.tf_state_bucket_import.outcome == 'failure' }}"
       working-directory: ./infrastructure_tf_state
       run: terraform apply -auto-approve -input=false tfplan
 
     - name: Terraform Init Again
-      if: ${{ steps.init.outcome == 'failure' }}
+      if: ${{ steps.init.outcome == 'failure' && steps.tf_state_bucket_import.outcome == 'failure' }}"
       working-directory: ./infrastructure
       run: terraform init -reconfigure -backend-config=backend.hcl
 
