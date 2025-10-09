@@ -206,7 +206,7 @@ jobs:
     - name: Initialize Terraform for bootstrapping state storage resources
       working-directory: ./infrastructure_tf_state
       if: ${{ steps.init.outcome == 'failure' }}
-      run: terraform init
+      run: terraform init -backend-config="REGION=${{ vars.REGION }}"
 
     - name: Terraform Plan For Creation of State Storage Resources
       if: ${{ steps.init.outcome == 'failure' }}
