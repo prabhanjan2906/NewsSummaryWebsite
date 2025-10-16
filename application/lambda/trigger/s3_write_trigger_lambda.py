@@ -20,8 +20,12 @@ def handler(event, context):
         print("--------------------------------")
         print(payload)
         print("--------------------------------")
+        if not payload:
+            return
+        
+        payload = json.loads(payload)
 
-        result = news_article_processor.generate_summary_and_topics(json.loads(payload))
+        result = news_article_processor.generate_summary_and_topics(payload)
         # output_text = "".join(p["text"] for p in out["output"]["message"]["content"])
 
         # # Write to processed/ with same file name after the prefix
