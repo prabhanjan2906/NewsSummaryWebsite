@@ -5,8 +5,6 @@ import news_article_processor
 import json
 
 def handler(event, context):
-    print(event)
-    print(context)
     for rec in event.get("Records", []):
         bucket = rec["s3"]["bucket"]["name"]
         key    = urllib.parse.unquote_plus(rec["s3"]["object"]["key"])
@@ -17,9 +15,6 @@ def handler(event, context):
 
         # Read input JSON (as text)
         payload = s3_handler.read_from_s3(bucket, key)
-        print("--------------------------------")
-        print(payload)
-        print("--------------------------------")
         if not payload:
             return
         

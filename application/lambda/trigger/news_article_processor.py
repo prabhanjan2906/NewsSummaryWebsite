@@ -35,11 +35,9 @@ def generate_summary_and_topics(payload):
         }],
         inferenceConfig={"maxTokens": 1024, "temperature": 0.2}
     )
-    print("<<<<<<<<<<<<<<<<<<<<<<<<<<<")
     try:
         for c in result['output']['message']['content']:
             if 'text' in c:
-                print (c['text'])
                 return json.loads(c['text'])
     except Exception as e:
         print (e)
