@@ -106,6 +106,7 @@ jobs:
     environment: ${{ github.ref_name == 'master' && 'production' || 'development' }}
     env:
       DEPLOY_ENV: ${{ github.ref_name == 'master' && 'production' || 'development' }}
+      TF_STATE_PATH_ENV: ${{ vars.REGION == 'us-east-2' && 'prod' || vars.REGION}}
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
