@@ -1,6 +1,8 @@
 import os, sys
 import config
+from functools import cache
 
+@cache
 def setup_s3_client():
     pth = os.path.join(os.path.dirname(__file__), 'package')
     if pth not in sys.path:

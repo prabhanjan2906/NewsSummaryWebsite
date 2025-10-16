@@ -1,4 +1,5 @@
 import bedrock_config
+import json
 
 TASK_PROMPT = """
 You are a professional at understanding a given news article and extracting key information from it.
@@ -35,4 +36,11 @@ def generate_summary_and_topics(payload):
         inferenceConfig={"maxTokens": 1024, "temperature": 0.2}
     )
     print("<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-    print(result)
+    try:
+        for c in result['output']['message']['content']:
+            if 'text' in c:
+                print (c['text'])
+                return json.loads(c['text'])
+    except Exception as e:
+        print (e)
+    return None
