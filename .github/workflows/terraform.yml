@@ -97,17 +97,6 @@ jobs:
         name: webpagescraper_python_dependency_layer
         path: webpagescraper_python_dependency_layer.zip
 
-    - name: Create zip archive for trigger
-      run: |
-        cd application/lambda/trigger
-        zip -r ../../../trigger.zip ./* -x "*.git*" "./python/*"
-
-    - name: Upload artifact for trigger
-      uses: actions/upload-artifact@v4
-      with:
-        name: trigger
-        path: trigger.zip
-
   terraform:
     name: 'Terraform'
     permissions:
@@ -117,7 +106,6 @@ jobs:
     environment: ${{ github.ref_name == 'master' && 'production' || 'development' }}
     env:
       DEPLOY_ENV: ${{ github.ref_name == 'master' && 'production' || 'development' }}
-      TF_STATE_PATH_ENV: ${{ vars.REGION == 'us-east-2' && 'prod' || vars.REGION}}
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -134,7 +122,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v3
       with:
         role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }} # ARN of the role to assume. Copy from AWS IAM console and add it in github secrets manually.
-        aws-region: ${{ vars.REGION }}
+        aws-region: us-east-2
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
@@ -167,12 +155,6 @@ jobs:
         name: webpagescraper_python_dependency_layer
         path: infrastructure/consumer/
 
-    - name: Download Lambda zip artifact for trigger lambda
-      uses: actions/download-artifact@v4
-      with:
-        name: trigger
-        path: infrastructure/trigger/
-
     # Generates an tfvar file for Terraform
     - name: Create terraform.tfvars
       working-directory: ./infrastructure
@@ -181,23 +163,12 @@ jobs:
         echo "COUNTRY= \"${{ vars.COUNTRY }}\"" >> terraform.tfvars
         echo "LANGUAGE= \"${{ vars.LANGUAGE }}\"" >> terraform.tfvars
         echo "RAW_BUCKET= \"${{ vars.RAW_BUCKET }}\"" >> terraform.tfvars
-        echo "REGION= \"${{ vars.REGION }}\"" >> terraform.tfvars
-        echo "RAW_BUCKET_INPUT_KEY= \"${{ vars.RAW_BUCKET_INPUT_KEY }}\"" >> terraform.tfvars
-        echo "RAW_BUCKET_OUTPUT_KEY= \"${{ vars.RAW_BUCKET_OUTPUT_KEY }}\"" >> terraform.tfvars
-        echo "MODEL_ID= \"${{ vars.MODEL_ID }}\"" >> terraform.tfvars
         echo "ENVIRONMENT= \"$DEPLOY_ENV\"" >> terraform.tfvars
 
     # properly format terraform.tfvars file generated above
     - name: Terraform Format terraform.tfvars
       working-directory: ./infrastructure
       run: terraform fmt terraform.tfvars
-
-    - name: replace region name in backend.hcl
-      working-directory: ./infrastructure
-      run: |
-        sed -i "s|__REGION__|${{ vars.REGION }}|g" "backend.hcl"
-        sed -i "s|__ENV__|$TF_STATE_PATH_ENV|g" "backend.hcl"
-        cat backend.hcl
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
@@ -209,29 +180,25 @@ jobs:
     - name: Initialize Terraform for bootstrapping state storage resources
       working-directory: ./infrastructure_tf_state
       if: ${{ steps.init.outcome == 'failure' }}
-      run: terraform init -backend-config="region=us-east-2" -var "REGION=${{ vars.REGION }}"
-
-    - name: Import S3 bucket of terraform state store
-      id: tf_state_bucket_import
-      continue-on-error: true
-      working-directory: ./infrastructure_tf_state
-      if: ${{ steps.init.outcome == 'failure' }}
-      run: |
-        terraform import aws_s3_bucket.tf_state ${{ vars.TERRAFORM_STATE_STORAGE_BUCKET_NAME }}
-        terraform init -reconfigure -migrate-state -backend-config=../infrastructure/backend.hcl
+      run: terraform init
 
     - name: Terraform Plan For Creation of State Storage Resources
-      if: ${{ steps.init.outcome == 'failure' && steps.tf_state_bucket_import.outcome == 'failure' }}"
+      if: ${{ steps.init.outcome == 'failure' }}
       working-directory: ./infrastructure_tf_state
-      run: terraform plan -out=tfplan -input=false -var "REGION=${{ vars.REGION }}"
+      run: terraform plan -out=tfplan -input=false
+
+    - name: Terraform apply For Creation of State Storage Resources
+      if: ${{ steps.init.outcome == 'failure' }}
+      working-directory: ./infrastructure_tf_state
+      run: terraform plan -out=tfplan -input=false
       
     - name: Terraform apply For Creation of State Storage Resources
-      if: ${{ steps.init.outcome == 'failure' && steps.tf_state_bucket_import.outcome == 'failure' }}"
+      if: ${{ steps.init.outcome == 'failure' }}
       working-directory: ./infrastructure_tf_state
       run: terraform apply -auto-approve -input=false tfplan
 
     - name: Terraform Init Again
-      if: ${{ steps.init.outcome == 'failure' && steps.tf_state_bucket_import.outcome == 'failure' }}"
+      if: ${{ steps.init.outcome == 'failure' }}
       working-directory: ./infrastructure
       run: terraform init -reconfigure -backend-config=backend.hcl
 
