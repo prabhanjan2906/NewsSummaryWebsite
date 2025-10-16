@@ -170,6 +170,13 @@ jobs:
       working-directory: ./infrastructure
       run: terraform fmt terraform.tfvars
 
+    - name: replace region name in backend.hcl
+      working-directory: ./infrastructure
+      run: |
+        sed -i "s|__REGION__|${{ vars.REGION }}|g" "backend.hcl"
+        sed -i "s|__ENV__|$TF_STATE_PATH_ENV|g" "backend.hcl"
+        cat backend.hcl
+
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init
