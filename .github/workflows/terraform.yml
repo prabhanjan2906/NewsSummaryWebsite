@@ -97,6 +97,17 @@ jobs:
         name: webpagescraper_python_dependency_layer
         path: webpagescraper_python_dependency_layer.zip
 
+    - name: Create zip archive for trigger
+      run: |
+        cd application/lambda/trigger
+        zip -r ../../../trigger.zip ./* -x "*.git*" "./python/*"
+
+    - name: Upload artifact for trigger
+      uses: actions/upload-artifact@v4
+      with:
+        name: trigger
+        path: trigger.zip
+
   terraform:
     name: 'Terraform'
     permissions:
@@ -155,6 +166,12 @@ jobs:
       with:
         name: webpagescraper_python_dependency_layer
         path: infrastructure/consumer/
+
+    - name: Download Lambda zip artifact for trigger lambda
+      uses: actions/download-artifact@v4
+      with:
+        name: trigger
+        path: infrastructure/trigger/
 
     # Generates an tfvar file for Terraform
     - name: Create terraform.tfvars
