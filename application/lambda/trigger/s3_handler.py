@@ -8,5 +8,4 @@ def read_from_s3(bucket, key):
 
 @s3_config.s3_client_config
 def write_to_s3(bucket, key, jsondata):
-    obj = write_to_s3.s3_client.put_object(Bucket=bucket, Key=key, Body=json.dumps(jsondata))
-    return obj["Body"].read().decode("utf-8")
+    write_to_s3.s3_client.put_object(Bucket=bucket, Key=key, Body=json.dumps(jsondata))
