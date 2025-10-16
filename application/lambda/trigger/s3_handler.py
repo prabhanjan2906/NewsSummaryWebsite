@@ -1,4 +1,5 @@
 import s3_config
+import json
 
 @s3_config.s3_client_config
 def read_from_s3(bucket, key):
