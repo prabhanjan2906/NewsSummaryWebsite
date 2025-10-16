@@ -164,6 +164,10 @@ jobs:
         echo "COUNTRY= \"${{ vars.COUNTRY }}\"" >> terraform.tfvars
         echo "LANGUAGE= \"${{ vars.LANGUAGE }}\"" >> terraform.tfvars
         echo "RAW_BUCKET= \"${{ vars.RAW_BUCKET }}\"" >> terraform.tfvars
+        echo "REGION= \"${{ vars.REGION }}\"" >> terraform.tfvars
+        echo "RAW_BUCKET_INPUT_KEY= \"${{ vars.RAW_BUCKET_INPUT_KEY }}\"" >> terraform.tfvars
+        echo "RAW_BUCKET_OUTPUT_KEY= \"${{ vars.RAW_BUCKET_OUTPUT_KEY }}\"" >> terraform.tfvars
+        echo "MODEL_ID= \"${{ vars.MODEL_ID }}\"" >> terraform.tfvars
         echo "ENVIRONMENT= \"$DEPLOY_ENV\"" >> terraform.tfvars
 
     # properly format terraform.tfvars file generated above
