@@ -5,7 +5,7 @@ app_config = {
     "model_id" : os.environ.get("MODEL_ID"),
     "input_prefix" : os.environ.get("INPUT_PREFIX"),
     # "key" : 'raw/'
-    "output_prefix" : str(os.environ.get("OUTPUT_PREFIX")) + "/"
+    "output_prefix" : str(os.environ.get("OUTPUT_PREFIX"))
 }
 
 def get_region():
