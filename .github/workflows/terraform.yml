@@ -221,17 +221,17 @@ jobs:
         terraform init -reconfigure -migrate-state -backend-config=../infrastructure/backend.hcl
 
     - name: Terraform Plan For Creation of State Storage Resources
-      if: ${{ steps.tf_state_bucket_import.outcome == 'failure' }}"
+      if: ${{ steps.init.outcome == 'failure' && steps.tf_state_bucket_import.outcome == 'failure' }}"
       working-directory: ./infrastructure_tf_state
       run: terraform plan -out=tfplan -input=false -var "REGION=${{ vars.REGION }}"
       
     - name: Terraform apply For Creation of State Storage Resources
-      if: ${{ steps.tf_state_bucket_import.outcome == 'failure' }}"
+      if: ${{ steps.init.outcome == 'failure' && steps.tf_state_bucket_import.outcome == 'failure' }}"
       working-directory: ./infrastructure_tf_state
       run: terraform apply -auto-approve -input=false tfplan
 
     - name: Terraform Init Again
-      if: ${{ steps.tf_state_bucket_import.outcome == 'failure' }}"
+      if: ${{ steps.init.outcome == 'failure' && steps.tf_state_bucket_import.outcome == 'failure' }}"
       working-directory: ./infrastructure
       run: terraform init -reconfigure -backend-config=backend.hcl
 
