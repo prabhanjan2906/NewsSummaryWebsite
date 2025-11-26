@@ -31,11 +31,11 @@ data "aws_iam_policy_document" "s3_write" {
   }
 }
 
-resource "aws_iam_role_policy" "s3_write" {
-  name   = "webpagescraper_s3_write_policy"
-  role   = aws_iam_role.news_consumer_exec.id
-  policy = data.aws_iam_policy_document.s3_write.json
-}
+# resource "aws_iam_role_policy" "s3_write" {
+#   name   = "webpagescraper_s3_write_policy"
+#   role   = aws_iam_role.news_consumer_exec.id
+#   policy = data.aws_iam_policy_document.s3_write.json
+# }
 
 resource "aws_s3_bucket" "raw_data_storage_for_webpage_scraper" {
   bucket = var.RAW_BUCKET

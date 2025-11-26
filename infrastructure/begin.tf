@@ -7,7 +7,7 @@ module "lambda" {
 
 module "consumer" {
   source                    = "./consumer"
-  newsapi_message_queue_arn = module.lambda.newsapi_message_queue_arn
+  # newsapi_message_queue_arn = module.lambda.newsapi_message_queue_arn
   RAW_BUCKET                = var.RAW_BUCKET
   ENVIRONMENT               = var.ENVIRONMENT
   RAW_BUCKET_INPUT_KEY      = var.RAW_BUCKET_INPUT_KEY
@@ -28,6 +28,6 @@ module "s3_write_trigger" {
   MODEL_ID                                 = var.MODEL_ID
 }
 
-output "newsapi_arn" {
-  value = module.lambda.newsapi_fetcher_lambda_function_arn
-}
+# output "newsapi_arn" {
+#   value = module.lambda.newsapi_fetcher_lambda_function_arn
+# }
