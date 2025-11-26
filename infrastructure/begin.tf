@@ -6,7 +6,7 @@ module "lambda" {
 }
 
 module "consumer" {
-  source                    = "./consumer"
+  source = "./consumer"
   # newsapi_message_queue_arn = module.lambda.newsapi_message_queue_arn
   RAW_BUCKET                = var.RAW_BUCKET
   ENVIRONMENT               = var.ENVIRONMENT
