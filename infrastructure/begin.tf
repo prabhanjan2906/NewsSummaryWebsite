@@ -15,8 +15,8 @@ module "consumer" {
 }
 
 module "s3_write_trigger" {
-  source                                   = "./trigger"
-  python_dependency_layer_arn              = module.consumer.python_dependency_layer_arn
+  source = "./trigger"
+  # python_dependency_layer_arn              = module.consumer.python_dependency_layer_arn
   raw_data_storage_for_webpage_scraper_id  = module.consumer.raw_data_storage_for_webpage_scraper_id
   raw_data_storage_for_webpage_scraper_arn = module.consumer.raw_data_storage_for_webpage_scraper_arn
   RAW_BUCKET                               = var.RAW_BUCKET
