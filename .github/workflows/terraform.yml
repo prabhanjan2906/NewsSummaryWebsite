@@ -137,23 +137,23 @@ jobs:
           **/.terraform/providers
         key: ${{ runner.os }}-tf-${{ hashFiles('**/.terraform.lock.hcl') }}
 
-    - name: Download Lambda zip artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: lambda_news_api_fetcher
-        path: infrastructure/newsapi_fetcher_lambda/
+    # - name: Download Lambda zip artifact
+    #   uses: actions/download-artifact@v4
+    #   with:
+    #     name: lambda_news_api_fetcher
+    #     path: infrastructure/newsapi_fetcher_lambda/
 
-    - name: Download Lambda zip artifact for webscraper
-      uses: actions/download-artifact@v4
-      with:
-        name: lambda_web_page_scraper
-        path: infrastructure/consumer/
+    # - name: Download Lambda zip artifact for webscraper
+    #   uses: actions/download-artifact@v4
+    #   with:
+    #     name: lambda_web_page_scraper
+    #     path: infrastructure/consumer/
 
-    - name: Download Lambda zip artifact for lambda layer
-      uses: actions/download-artifact@v4
-      with:
-        name: webpagescraper_python_dependency_layer
-        path: infrastructure/consumer/
+    # - name: Download Lambda zip artifact for lambda layer
+    #   uses: actions/download-artifact@v4
+    #   with:
+    #     name: webpagescraper_python_dependency_layer
+    #     path: infrastructure/consumer/
 
     # Generates an tfvar file for Terraform
     - name: Create terraform.tfvars
@@ -164,6 +164,7 @@ jobs:
         echo "LANGUAGE= \"${{ vars.LANGUAGE }}\"" >> terraform.tfvars
         echo "RAW_BUCKET= \"${{ vars.RAW_BUCKET }}\"" >> terraform.tfvars
         echo "ENVIRONMENT= \"$DEPLOY_ENV\"" >> terraform.tfvars
+        cat terraform.tfvars
 
     # properly format terraform.tfvars file generated above
     - name: Terraform Format terraform.tfvars
