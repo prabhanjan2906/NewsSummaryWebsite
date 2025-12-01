@@ -122,7 +122,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v3
       with:
         role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }} # ARN of the role to assume. Copy from AWS IAM console and add it in github secrets manually.
-        aws-region: us-east-2
+        aws-region: ${{ vars.REGION }}
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
@@ -164,6 +164,7 @@ jobs:
         echo "LANGUAGE= \"${{ vars.LANGUAGE }}\"" >> terraform.tfvars
         echo "RAW_BUCKET= \"${{ vars.RAW_BUCKET }}\"" >> terraform.tfvars
         echo "ENVIRONMENT= \"$DEPLOY_ENV\"" >> terraform.tfvars
+        echo "REGION= \"$${{ vars.REGION }}\"" >> terraform.tfvars
         cat terraform.tfvars
 
     # properly format terraform.tfvars file generated above
