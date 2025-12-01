@@ -1,0 +1,2 @@
+lxml_html_clean
+trafilatura==2.0.0
