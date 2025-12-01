@@ -165,6 +165,7 @@ jobs:
         echo "RAW_BUCKET= \"${{ vars.RAW_BUCKET }}\"" >> terraform.tfvars
         echo "ENVIRONMENT= \"$DEPLOY_ENV\"" >> terraform.tfvars
         echo "REGION= \"${{ vars.REGION }}\"" >> terraform.tfvars
+        cp terraform.tfvars ../infrastructure_tf_state/terraform.tfvars
         cat terraform.tfvars
 
     # properly format terraform.tfvars file generated above
