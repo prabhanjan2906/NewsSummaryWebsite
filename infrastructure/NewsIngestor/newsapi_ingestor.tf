@@ -18,7 +18,7 @@ resource "aws_s3_bucket" "raw_articles" {
 
 resource "aws_sqs_queue" "raw_articles_queue" {
   name                       = "${var.env}-raw-articles-queue"
-  visibility_timeout_seconds = 60
+  visibility_timeout_seconds = 305
   message_retention_seconds  = 345600 # 4 days
 }
 
