@@ -86,7 +86,7 @@ resource "aws_iam_role_policy_attachment" "article_cleaner_lambda_policy_attach"
 ############################
 
 resource "aws_lambda_layer_version" "article_cleaner_normalizer_dependency_layer" {
-  filename         = "${path.module}/NewsIngestor_python_dependency_layer.zip"
+  filename         = "${path.module}/CleanerAndNormalizer_python_dependency_layer.zip"
   layer_name       = "CleanerAndNormalizer_python_dependency_layer"
   source_code_hash = filebase64sha256("${path.module}/CleanerAndNormalizer_python_dependency_layer.zip")
 
