@@ -1,0 +1,6 @@
+infrastructure/.terraform/
+*.pyc
+application/lambda/NewsApi/__pycache__
+.venv/
+venv/
+.env
