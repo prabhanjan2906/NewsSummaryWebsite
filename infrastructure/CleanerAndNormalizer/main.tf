@@ -125,7 +125,7 @@ resource "aws_lambda_function" "article_cleaner_normalizer" {
   }
 
   layers = [
-    aws_lambda_layer_version.article_cleaner_normalizer.arn
+    aws_lambda_layer_version.article_cleaner_normalizer_dependency_layer.arn
   ]
 
   timeout     = 300
