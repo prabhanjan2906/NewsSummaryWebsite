@@ -124,6 +124,10 @@ resource "aws_lambda_function" "article_cleaner_normalizer" {
     }
   }
 
+  layers = [
+    aws_lambda_layer_version.article_cleaner_normalizer.arn
+  ]
+
   timeout     = 300
   memory_size = 512
 }
