@@ -17,6 +17,8 @@ resource "aws_iam_policy" "github_actions_rds_management" {
           "rds:DescribeDBEngineVersions",
           "rds:DescribeDBSubnetGroups",
           "rds:DescribeDBSecurityGroups",
+          "iam:CreateServiceLinkedRole",
+          "iam:GetServiceLinkedRoleDeletionStatus",
           "rds:DescribeDBParameterGroups"
         ],
         Resource = "*"
@@ -56,4 +58,5 @@ resource "aws_db_instance" "newsdb" {
 
   publicly_accessible = false
   skip_final_snapshot = true
+  depends_on = [ aws_iam_role_policy_attachment.github_actions_rds_management_attach ]
 }
