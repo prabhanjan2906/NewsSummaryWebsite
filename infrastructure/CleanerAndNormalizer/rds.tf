@@ -49,7 +49,6 @@ resource "aws_iam_role_policy_attachment" "github_actions_rds_management_attach"
 
 resource "aws_db_instance" "newsdb" {
   engine            = "postgres"
-  engine_version    = "15.3"
   instance_class    = "db.t3.micro"
   identifier        = "${var.env}-news-db"
   username          = var.db_user
