@@ -133,7 +133,7 @@ resource "aws_lambda_function" "newsapi_headline_ingestion" {
       RAW_BUCKET_NAME        = aws_s3_bucket.raw_articles.bucket
       RAW_ARTICLES_QUEUE_URL = aws_sqs_queue.raw_articles_queue.url
       SOURCE_ID              = "newsapi"
-      NEWS_API_KEY        = var.newsapi_api_key
+      NEWS_API_KEY           = var.newsapi_api_key
       NEWSAPI_COUNTRY        = var.country
       NEWSAPI_LANGUAGE       = var.language
       NEWSAPI_CATEGORY       = ""

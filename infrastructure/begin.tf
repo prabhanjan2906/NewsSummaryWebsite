@@ -10,13 +10,13 @@ module "NewsIngestor" {
 }
 
 module "CleanerAndNormalizer" {
-  source = "./CleanerAndNormalizer"
-  input_sqs_raw_queue_arn = module.NewsIngestor.raw_articles_sqs_queue_arn
+  source                   = "./CleanerAndNormalizer"
+  input_sqs_raw_queue_arn  = module.NewsIngestor.raw_articles_sqs_queue_arn
   raw_articles_bucket_name = var.RAW_BUCKET
-  raw_articles_bucket_url = module.NewsIngestor.raw_articles_bucket_url
-  region = var.REGION
-  env = var.ENVIRONMENT
-  db_name = var.DB_NAME
-  db_password = var.DB_PASSWORD
-  db_user = var.DB_USER
+  raw_articles_bucket_url  = module.NewsIngestor.raw_articles_bucket_url
+  region                   = var.REGION
+  env                      = var.ENVIRONMENT
+  db_name                  = var.DB_NAME
+  db_password              = var.DB_PASSWORD
+  db_user                  = var.DB_USER
 }

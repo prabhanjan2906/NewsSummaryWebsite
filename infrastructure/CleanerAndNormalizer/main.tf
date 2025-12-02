@@ -112,8 +112,8 @@ resource "aws_lambda_function" "article_cleaner_normalizer" {
     }
   }
 
-  timeout          = 300
-  memory_size      = 512
+  timeout     = 300
+  memory_size = 512
 }
 
 ############################
@@ -121,8 +121,8 @@ resource "aws_lambda_function" "article_cleaner_normalizer" {
 ############################
 
 resource "aws_lambda_event_source_mapping" "raw_articles_to_cleaner" {
-  event_source_arn  = var.input_sqs_raw_queue_arn
-  function_name     = aws_lambda_function.article_cleaner_normalizer.arn
-  batch_size        = 10
-  enabled           = true
+  event_source_arn = var.input_sqs_raw_queue_arn
+  function_name    = aws_lambda_function.article_cleaner_normalizer.arn
+  batch_size       = 10
+  enabled          = true
 }

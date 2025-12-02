@@ -1,3 +1,3 @@
 locals {
-  pythonVersion                          = "python3.14"
+  pythonVersion = "python3.14"
 }

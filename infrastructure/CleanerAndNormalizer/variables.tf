@@ -30,6 +30,6 @@ variable "env" {
 variable "input_sqs_raw_queue_arn" {
 }
 
-variable "raw_articles_bucket_name"{}
-  
+variable "raw_articles_bucket_name" {}
+
 variable "raw_articles_bucket_url" {}
