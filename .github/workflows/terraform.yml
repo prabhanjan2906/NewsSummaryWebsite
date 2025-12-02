@@ -111,6 +111,7 @@ jobs:
 
   terraform:
     name: 'Terraform'
+    needs: build
     permissions:
       id-token: write
       contents: read

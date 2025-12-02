@@ -50,7 +50,7 @@ resource "aws_iam_policy" "article_cleaner_lambda_policy" {
           "s3:GetObject"
         ]
         Resource = [
-          "arn:aws:s3:::${aws_s3_bucket.raw_articles.bucket}/*"
+          "arn:aws:s3:::${var.raw_articles_bucket_name}/*"
         ]
       },
       {
