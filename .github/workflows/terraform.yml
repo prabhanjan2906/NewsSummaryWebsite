@@ -64,38 +64,27 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Create zip archive for news_headlines_function lambda function
+    - name: Create zip archive for NewsIngestor lambda layer
       run: |
-        cd application/lambda/NewsApi
-        zip -r ../../../lambda_news_api_fetcher.zip ./* -x "*.git*"
+        cd application/NewsIngestor/
+        zip -r ../../NewsIngestor_python_dependency_layer.zip ./python -x "*.git*" 
 
-    - name: Upload artifact
+    - name: Upload artifact for NewsIngestor lambda layer
       uses: actions/upload-artifact@v4
       with:
-        name: lambda_news_api_fetcher
-        path: lambda_news_api_fetcher.zip
+        name: NewsIngestor_python_dependency_layer
+        path: NewsIngestor_python_dependency_layer.zip
 
-    - name: Create zip archive for webscraper lambda function
+    - name: Create zip archive for NewsIngestor lambda function
       run: |
-        cd application/lambda/WebPageScraper
-        zip -r ../../../lambda_web_page_scraper.zip ./* -x "*.git*" "./python/*"
+        cd application/NewsIngestor
+        zip -r ../../NewsIngestor.zip ./* -x "*.git*" "./python/*"
 
-    - name: Upload artifact for webscraper
+    - name: Upload artifact for NewsIngestor function
       uses: actions/upload-artifact@v4
       with:
-        name: lambda_web_page_scraper
-        path: lambda_web_page_scraper.zip
-
-    - name: Create zip archive for webscraper lambda layer
-      run: |
-        cd application/lambda/WebPageScraper
-        zip -r ../../../webpagescraper_python_dependency_layer.zip ./python -x "*.git*" 
-
-    - name: Upload artifact for webscraper
-      uses: actions/upload-artifact@v4
-      with:
-        name: webpagescraper_python_dependency_layer
-        path: webpagescraper_python_dependency_layer.zip
+        name: NewsIngestor
+        path: NewsIngestor.zip
 
   terraform:
     name: 'Terraform'
@@ -122,7 +111,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v3
       with:
         role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }} # ARN of the role to assume. Copy from AWS IAM console and add it in github secrets manually.
-        aws-region: us-east-2
+        aws-region: ${{ vars.REGION }}
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
@@ -137,23 +126,17 @@ jobs:
           **/.terraform/providers
         key: ${{ runner.os }}-tf-${{ hashFiles('**/.terraform.lock.hcl') }}
 
-    - name: Download Lambda zip artifact
+    - name: Download Lambda zip artifact for NewsIngestor lambda layer
       uses: actions/download-artifact@v4
       with:
-        name: lambda_news_api_fetcher
-        path: infrastructure/newsapi_fetcher_lambda/
+        name: NewsIngestor_python_dependency_layer
+        path: infrastructure/NewsIngestor/
 
-    - name: Download Lambda zip artifact for webscraper
+    - name: Download Lambda zip artifact for NewsIngestor lambda function
       uses: actions/download-artifact@v4
       with:
-        name: lambda_web_page_scraper
-        path: infrastructure/consumer/
-
-    - name: Download Lambda zip artifact for lambda layer
-      uses: actions/download-artifact@v4
-      with:
-        name: webpagescraper_python_dependency_layer
-        path: infrastructure/consumer/
+        name: NewsIngestor
+        path: infrastructure/NewsIngestor/
 
     # Generates an tfvar file for Terraform
     - name: Create terraform.tfvars
@@ -164,11 +147,24 @@ jobs:
         echo "LANGUAGE= \"${{ vars.LANGUAGE }}\"" >> terraform.tfvars
         echo "RAW_BUCKET= \"${{ vars.RAW_BUCKET }}\"" >> terraform.tfvars
         echo "ENVIRONMENT= \"$DEPLOY_ENV\"" >> terraform.tfvars
+        echo "REGION= \"${{ vars.REGION }}\"" >> terraform.tfvars
+        echo "RAW_BUCKET_INPUT_KEY= \"${{ vars.RAW_BUCKET_INPUT_KEY }}\"" >> terraform.tfvars
+        cp terraform.tfvars ../infrastructure_tf_state/terraform.tfvars
+        cat terraform.tfvars
 
     # properly format terraform.tfvars file generated above
     - name: Terraform Format terraform.tfvars
       working-directory: ./infrastructure
       run: terraform fmt terraform.tfvars
+
+    - name: replace region name in backend.hcl
+      working-directory: ./infrastructure
+      run: |
+        sed -i "s|__REGION__|${{ vars.REGION }}|g" "backend.hcl"
+        sed -i "s|__ENV__|$DEPLOY_ENV|g" "backend.hcl"
+        cat backend.hcl
+        cp backend.hcl ../infrastructure_tf_state/backend.hcl
+        ls ../infrastructure_tf_state/backend.hcl
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init

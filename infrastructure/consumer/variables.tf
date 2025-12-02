@@ -1,1 +1,0 @@
-../consumer_variables.tf
