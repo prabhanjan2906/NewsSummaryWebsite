@@ -142,6 +142,14 @@ resource "aws_lambda_function" "newsapi_headline_ingestion" {
   }
 }
 
+output "raw_articles_sqs_queue_arn" {
+  value = aws_s3_bucket.raw_articles.arn
+}
+
+output "raw_articles_bucket_url" {
+  value = aws_s3_bucket.raw_articles.id
+}
+
 # (Optional) EventBridge rule to trigger Lambda on a schedule
 # resource "aws_cloudwatch_event_rule" "newsapi_schedule" {
 #   name                = "newsapi-headline-ingestion-schedule"
