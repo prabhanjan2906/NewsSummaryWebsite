@@ -3,7 +3,7 @@
 ############################
 
 resource "aws_s3_bucket" "raw_articles" {
-  bucket = var.raw_bucket_name
+  bucket = local.bucket_name
 
   tags = {
     Name = "newsapi-raw-articles"
@@ -143,7 +143,7 @@ resource "aws_lambda_function" "newsapi_headline_ingestion" {
 }
 
 output "raw_articles_sqs_queue_arn" {
-  value = aws_s3_bucket.raw_articles.arn
+  value = aws_sqs_queue.raw_articles_queue.arn
 }
 
 output "raw_articles_bucket_url" {
