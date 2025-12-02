@@ -3,7 +3,7 @@
 ############################
 
 resource "aws_s3_bucket" "raw_articles" {
-  bucket = local.bucket_name
+  bucket = var.raw_bucket_name
 
   tags = {
     Name = "newsapi-raw-articles"
