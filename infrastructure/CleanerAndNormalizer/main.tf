@@ -85,9 +85,21 @@ resource "aws_iam_role_policy_attachment" "article_cleaner_lambda_policy_attach"
 # Lambda: article_cleaner  #
 ############################
 
+resource "aws_lambda_layer_version" "article_cleaner_normalizer_dependency_layer" {
+  filename         = "${path.module}/NewsIngestor_python_dependency_layer.zip"
+  layer_name       = "CleanerAndNormalizer_python_dependency_layer"
+  source_code_hash = filebase64sha256("${path.module}/CleanerAndNormalizer_python_dependency_layer.zip")
+
+  compatible_runtimes = [
+    local.pythonVersion
+  ]
+
+  description = "Dependencies for CleanerAndNormalizer lambda"
+}
+
 # NOTE: build this zip file yourself containing cleaner_app.py as handler module
 resource "aws_lambda_function" "article_cleaner_normalizer" {
-  function_name = "article_cleaner_normalizer"
+  function_name = "${var.env}-article_cleaner_normalizer"
   role          = aws_iam_role.article_cleaner_lambda_role.arn
   runtime       = local.pythonVersion
   handler       = "cleaner_and_normalizer.handler"
