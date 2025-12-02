@@ -62,7 +62,7 @@ resource "aws_iam_policy" "article_cleaner_lambda_policy" {
           "sqs:GetQueueAttributes",
           "sqs:GetQueueUrl"
         ]
-        Resource = aws_sqs_queue.raw_articles_queue.arn
+        Resource = var.input_sqs_raw_queue_arn
       },
       {
         Sid    = "AllowSQSSendToNext"
