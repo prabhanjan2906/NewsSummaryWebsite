@@ -23,6 +23,30 @@ resource "aws_internet_gateway" "news_igw" {
   }
 }
 
+resource "aws_iam_policy" "github_actions_ec2_readonly" {
+  name        = "github-actions-ec2-readonly"
+  description = "Allow GitHubActionsRole to call EC2 Describe APIs needed by Terraform VPC module"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid    = "AllowEC2DescribeForTerraform",
+        Effect = "Allow",
+        Action = [
+          "ec2:DescribeAvailabilityZones",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeInternetGateways",
+          "ec2:DescribeRouteTables",
+          "ec2:DescribeNatGateways"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 data "aws_availability_zones" "available" {}
 
 # 3. Public subnets (for NAT gateway, ALBs, etc.)
