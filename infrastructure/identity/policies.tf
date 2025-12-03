@@ -56,7 +56,7 @@ resource "aws_iam_policy" "github_actions_ec2_readonly" {
           "rds:AddTagsToResource",
           "rds:ListTagsForResource"
         ],
-        Resource = "arn:aws:rds:::*"
+        Resource = "arn:aws:rds:*:*:*"
       }
     ]
   })
