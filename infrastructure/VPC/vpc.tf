@@ -16,7 +16,9 @@ resource "aws_iam_policy" "github_actions_ec2_readonly" {
           "ec2:DescribeSubnets",
           "ec2:DescribeInternetGateways",
           "ec2:DescribeRouteTables",
-          "ec2:DescribeNatGateways"
+          "ec2:DescribeNatGateways",
+          "ec2:DescribeAddresses",
+          "ec2:CreateVpc"
         ],
         Resource = "*"
       }
