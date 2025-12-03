@@ -249,13 +249,6 @@ jobs:
     # - name: Manual State edits
     #   working-directory: infrastructure
     #   run: terraform state pull && terraform state push edited_state_file.json
-    - name: Terraform state list
-      working-directory: ./infrastructure
-      run: terraform state list
-
-    - name: Terraform remove eip
-      working-directory: ./infrastructure
-      run: terraform state rm module.vpc.aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format

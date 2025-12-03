@@ -96,57 +96,57 @@ resource "aws_route_table_association" "public_b_assoc" {
 
 }
 
-# 6. NAT Gateway in public subnet A
-resource "aws_eip" "nat_eip" {
-  domain = "vpc"
-  tags = {
-    Name = "news-nat-eip"
-  }
+# # 6. NAT Gateway in public subnet A
+# resource "aws_eip" "nat_eip" {
+#   domain = "vpc"
+#   tags = {
+#     Name = "news-nat-eip"
+#   }
 
-}
+# }
 
-resource "aws_nat_gateway" "news_nat" {
-  allocation_id = aws_eip.nat_eip.id
-  subnet_id     = aws_subnet.public_a.id
+# resource "aws_nat_gateway" "news_nat" {
+#   allocation_id = aws_eip.nat_eip.id
+#   subnet_id     = aws_subnet.public_a.id
 
-  tags = {
-    Name = "news-nat"
-  }
+#   tags = {
+#     Name = "news-nat"
+#   }
 
-  depends_on = [aws_eip.nat_eip]
-}
+#   depends_on = [aws_eip.nat_eip]
+# }
 
-# 7. Private route table (0.0.0.0/0 -> NAT)
-resource "aws_route_table" "private_rt" {
-  vpc_id = aws_vpc.news_vpc.id
+# # 7. Private route table (0.0.0.0/0 -> NAT)
+# resource "aws_route_table" "private_rt" {
+#   vpc_id = aws_vpc.news_vpc.id
 
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.news_nat.id
-  }
+#   route {
+#     cidr_block     = "0.0.0.0/0"
+#     nat_gateway_id = aws_nat_gateway.news_nat.id
+#   }
 
-  tags = {
-    Name = "news-private-rt"
-  }
-  depends_on = [aws_internet_gateway.news_igw]
-}
+#   tags = {
+#     Name = "news-private-rt"
+#   }
+#   depends_on = [aws_internet_gateway.news_igw]
+# }
 
-resource "aws_route_table_association" "private_a_assoc" {
-  subnet_id      = aws_subnet.private_a.id
-  route_table_id = aws_route_table.private_rt.id
+# resource "aws_route_table_association" "private_a_assoc" {
+#   subnet_id      = aws_subnet.private_a.id
+#   route_table_id = aws_route_table.private_rt.id
 
-}
+# }
 
-resource "aws_route_table_association" "private_b_assoc" {
-  subnet_id      = aws_subnet.private_b.id
-  route_table_id = aws_route_table.private_rt.id
+# resource "aws_route_table_association" "private_b_assoc" {
+#   subnet_id      = aws_subnet.private_b.id
+#   route_table_id = aws_route_table.private_rt.id
 
-}
+# }
 
-output "private_subnet_a_id" {
-  value = aws_subnet.private_a.id
-}
+# output "private_subnet_a_id" {
+#   value = aws_subnet.private_a.id
+# }
 
-output "private_subnet_b_id" {
-  value = aws_subnet.private_b.id
-}
+# output "private_subnet_b_id" {
+#   value = aws_subnet.private_b.id
+# }
