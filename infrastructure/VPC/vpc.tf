@@ -56,14 +56,11 @@ resource "aws_iam_role_policy_attachment" "github_actions_ec2_readonly_attach" {
   policy_arn = aws_iam_policy.github_actions_ec2_readonly.arn
 }
 
-data "aws_availability_zones" "available" {}
-
 # 3. Public subnets (for NAT gateway, ALBs, etc.)
 resource "aws_subnet" "public_a" {
   vpc_id                  = aws_vpc.news_vpc.id
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
-  availability_zone       = data.aws_availability_zones.available.names[0]
 
   tags = {
     Name = "news-public-a"
@@ -74,7 +71,6 @@ resource "aws_subnet" "public_b" {
   vpc_id                  = aws_vpc.news_vpc.id
   cidr_block              = "10.0.2.0/24"
   map_public_ip_on_launch = true
-  availability_zone       = data.aws_availability_zones.available.names[0]
 
   tags = {
     Name = "news-public-b"
