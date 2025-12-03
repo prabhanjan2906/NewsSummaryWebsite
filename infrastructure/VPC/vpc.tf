@@ -21,6 +21,36 @@ resource "aws_iam_policy" "github_actions_ec2_readonly" {
           "ec2:CreateVpc"
         ],
         Resource = "*"
+      },
+
+      # RDS actions that MUST use "*"
+      {
+        Sid    = "AllowRDSCreateModifyDeleteDescribe",
+        Effect = "Allow",
+        Action = [
+          "rds:CreateDBInstance",
+          "rds:DeleteDBInstance",
+          "rds:ModifyDBInstance",
+          "rds:DescribeDBInstances",
+          "rds:DescribeDBEngineVersions",
+          "rds:DescribeDBSubnetGroups",
+          "rds:DescribeDBSecurityGroups",
+          "iam:CreateServiceLinkedRole",
+          "iam:GetServiceLinkedRoleDeletionStatus",
+          "rds:DescribeDBParameterGroups"
+        ],
+        Resource = "*"
+      },
+
+      # RDS actions that CAN be scoped to resource ARNs
+      {
+        Sid    = "AllowRDSTagging",
+        Effect = "Allow",
+        Action = [
+          "rds:AddTagsToResource",
+          "rds:ListTagsForResource"
+        ],
+        Resource = "arn:aws:rds:::*"
       }
     ]
   })
