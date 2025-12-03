@@ -6,3 +6,8 @@ variable "region" {
 variable "env" {
   type = string
 }
+
+variable "SubnetsCount" {
+  type = number
+  default = 2
+}

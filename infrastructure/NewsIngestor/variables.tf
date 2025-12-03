@@ -39,6 +39,9 @@ variable "RAW_BUCKET" {
 
 variable "newsingestor_sg_id" {}
 
-variable "private_subnet_a" {}
+variable "private_subnets" {}
 
-variable "private_subnet_b" {}
+variable "SubnetsCount" {
+  type = number
+  default = 2
+}

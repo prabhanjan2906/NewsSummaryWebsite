@@ -141,7 +141,7 @@ resource "aws_lambda_function" "newsapi_headline_ingestion" {
     }
   }
   vpc_config {
-    subnet_ids         = [var.private_subnet_a, var.private_subnet_a]
+    subnet_ids         = var.private_subnets
     security_group_ids = [var.newsingestor_sg_id]
   }
 }

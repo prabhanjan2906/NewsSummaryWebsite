@@ -38,6 +38,9 @@ variable "rds_sg_id" {}
 
 variable "lambda_sg" {}
 
-variable "private_subnet_a" {}
+variable "private_subnets" {}
 
-variable "private_subnet_b" {}
+variable "SubnetsCount" {
+  type = number
+  default = 2
+}

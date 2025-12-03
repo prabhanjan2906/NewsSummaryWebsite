@@ -6,6 +6,7 @@ module "vpc" {
   source     = "./VPC"
   region     = var.REGION
   env        = var.ENVIRONMENT
+  SubnetsCount = 2
   depends_on = [module.identity]
 }
 
@@ -19,8 +20,8 @@ module "NewsIngestor" {
   RAW_BUCKET_INPUT_KEY = var.RAW_BUCKET_INPUT_KEY
   RAW_BUCKET           = var.RAW_BUCKET
   newsingestor_sg_id   = module.vpc.newsingestor_sg_id
-  private_subnet_a     = module.vpc.private_subnet_a_id
-  private_subnet_b     = module.vpc.private_subnet_b_id
+  private_subnets     = module.vpc.private_subnets_id
+  SubnetsCount = 2
   depends_on           = [module.vpc]
 }
 
@@ -36,7 +37,7 @@ module "CleanerAndNormalizer" {
   db_user                  = var.DB_USER
   rds_sg_id                = module.vpc.rds_sg_id
   lambda_sg                = module.vpc.newsingestor_sg_id
-  private_subnet_a         = module.vpc.private_subnet_a_id
-  private_subnet_b         = module.vpc.private_subnet_b_id
+  private_subnets     = module.vpc.private_subnets_id
+  SubnetsCount = 2
   depends_on               = [module.vpc]
 }
