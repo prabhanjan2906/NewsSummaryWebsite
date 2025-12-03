@@ -256,12 +256,10 @@ jobs:
     - name: Terraform remove eip
       working-directory: ./infrastructure
       run: |
-        terraform state rm module.vpc.aws_eip.nat_eip
         terraform state rm module.vpc.aws_security_group.lambda_sg
         terraform state rm module.vpc.aws_security_group.rds_sg
-        terraform state rm module.vpc.aws_vpc.news_vpc
         terraform state rm module.vpc.aws_subnet.private_a
-        terraform state rm module.vpc.aws_subnet.private_b
+        terraform state rm module.vpc.aws_vpc.news_vpc
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
