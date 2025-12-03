@@ -93,8 +93,7 @@ resource "aws_route_table_association" "public_b_assoc" {
 
 # 6. NAT Gateway in public subnet A
 resource "aws_eip" "nat_eip" {
-  vpc = true
-
+  domain = "vpc"
   tags = {
     Name = "news-nat-eip"
   }
