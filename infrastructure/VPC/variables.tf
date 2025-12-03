@@ -8,6 +8,6 @@ variable "env" {
 }
 
 variable "SubnetsCount" {
-  type = number
+  type    = number
   default = 2
 }

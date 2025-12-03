@@ -41,6 +41,6 @@ variable "lambda_sg" {}
 variable "private_subnets" {}
 
 variable "SubnetsCount" {
-  type = number
+  type    = number
   default = 2
 }

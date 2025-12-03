@@ -8,9 +8,9 @@ data "aws_availability_zones" "available" {
 }
 
 locals {
-  SubnetCount = var.SubnetsCount
+  SubnetCount           = var.SubnetsCount
   cidr_sub_block_length = 8
-  azs = data.aws_availability_zones.available.names
+  azs                   = data.aws_availability_zones.available.names
 }
 
 # 1. VPC
@@ -37,11 +37,11 @@ resource "aws_internet_gateway" "news_igw" {
 
 # 3. Public subnets (for NAT gateway, ALBs, etc.)
 resource "aws_subnet" "public_subnets" {
-  count = local.SubnetCount
+  count                   = local.SubnetCount
   vpc_id                  = aws_vpc.news_vpc.id
   cidr_block              = cidrsubnet(aws_vpc.news_vpc.cidr_block, 8, count.index)
   map_public_ip_on_launch = true
-  availability_zone = local.azs[count.index]
+  availability_zone       = local.azs[count.index]
 
   tags = {
     Name = "${var.env}-news-public-${count.index}"
@@ -62,9 +62,9 @@ resource "aws_subnet" "public_subnets" {
 
 # 4. Private subnets (for RDS + Lambdas)
 resource "aws_subnet" "private_subnets" {
-  count = local.SubnetCount
-  vpc_id     = aws_vpc.news_vpc.id
-  cidr_block              = cidrsubnet(aws_vpc.news_vpc.cidr_block, 8, local.SubnetCount + count.index)
+  count             = local.SubnetCount
+  vpc_id            = aws_vpc.news_vpc.id
+  cidr_block        = cidrsubnet(aws_vpc.news_vpc.cidr_block, 8, local.SubnetCount + count.index)
   availability_zone = local.azs[count.index]
 
   tags = {
@@ -99,7 +99,7 @@ resource "aws_route_table" "public_rt" {
 }
 
 resource "aws_route_table_association" "public_subnet_assoc" {
-  count = local.SubnetCount
+  count          = local.SubnetCount
   subnet_id      = aws_subnet.public_subnets[count.index].id
   route_table_id = aws_route_table.public_rt.id
 }
@@ -146,7 +146,7 @@ resource "aws_route_table" "private_rt" {
 }
 
 resource "aws_route_table_association" "private_subnet_assoc" {
-  count = local.SubnetCount
+  count          = local.SubnetCount
   subnet_id      = aws_subnet.private_subnets[count.index].id
   route_table_id = aws_route_table.private_rt.id
 }

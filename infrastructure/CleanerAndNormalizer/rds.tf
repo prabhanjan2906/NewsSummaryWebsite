@@ -21,7 +21,7 @@
 
 # Subnet group for RDS (private subnets only)
 resource "aws_db_subnet_group" "newsdb_subnet_group" {
-  name = "${var.env}-rds-newsdb-subnet-group"
+  name       = "${var.env}-rds-newsdb-subnet-group"
   subnet_ids = var.private_subnets
 
   tags = {

@@ -42,6 +42,6 @@ variable "newsingestor_sg_id" {}
 variable "private_subnets" {}
 
 variable "SubnetsCount" {
-  type = number
+  type    = number
   default = 2
 }
