@@ -41,6 +41,7 @@ resource "aws_iam_policy" "github_actions_ec2_readonly" {
           "rds:DescribeDBSecurityGroups",
           "iam:CreateServiceLinkedRole",
           "iam:GetServiceLinkedRoleDeletionStatus",
+          "rds:CreateDBSubnetGroup",
           "rds:DescribeDBParameterGroups"
         ],
         Resource = "*"
