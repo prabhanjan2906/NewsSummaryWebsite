@@ -58,6 +58,16 @@ resource "aws_iam_policy" "github_actions_ec2_readonly" {
           "rds:ListTagsForResource"
         ],
         Resource = "arn:aws:rds:*:*:*"
+      },
+      {
+        "Sid" : "AllowENIManagementForTerraform",
+        "Effect" : "Allow",
+        "Action" : [
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DetachNetworkInterface",
+          "ec2:DeleteNetworkInterface"
+        ],
+        "Resource" : "*"
       }
     ]
   })
