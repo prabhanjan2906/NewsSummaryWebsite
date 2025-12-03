@@ -35,6 +35,7 @@ resource "aws_iam_policy" "github_actions_ec2_readonly" {
         Effect = "Allow",
         Action = [
           "ec2:AllocateAddress",
+          "ec2:CreateTags",
           "ec2:DescribeAvailabilityZones",
           "ec2:DescribeVpcs",
           "ec2:DescribeSubnets",
