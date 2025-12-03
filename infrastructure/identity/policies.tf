@@ -23,6 +23,7 @@ resource "aws_iam_policy" "github_actions_ec2_readonly" {
           "ec2:DescribeAddressesAttribute",
           "ec2:ModifyVpcAttribute",
           "ec2:CreateNetworkInterface",
+          "ec2:DetachNetworkInterface",
           "ec2:*"
         ],
         Resource = "*"

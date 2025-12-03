@@ -27,7 +27,8 @@ resource "aws_iam_policy" "lambda_vpc_policy" {
           "ec2:DeleteNetworkInterface",
           "ec2:DescribeSubnets",
           "ec2:DescribeSecurityGroups",
-          "ec2:DescribeVpcs"
+          "ec2:DescribeVpcs",
+          "ec2:DetachNetworkInterface"
         ],
         Resource = "*"
       }
