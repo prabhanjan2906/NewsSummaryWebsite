@@ -261,7 +261,7 @@ jobs:
 
     - name: Terraform remove eip
       working-directory: ./infrastructure
-      run: terraform state rm aws_eip.nat_eip
+      run: terraform state rm module.vpc.aws_eip.nat_eip
     # # validates Terraform
     # - name: Terraform Validate
     #   working-directory: ./infrastructure
