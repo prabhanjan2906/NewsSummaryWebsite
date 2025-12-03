@@ -30,7 +30,7 @@ resource "aws_subnet" "public_a" {
   vpc_id                  = aws_vpc.news_vpc.id
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
-  availability_zone = data.aws_availability_zones.available.names[0]
+  availability_zone       = data.aws_availability_zones.available.names[0]
 
   tags = {
     Name = "news-public-a"
@@ -41,7 +41,7 @@ resource "aws_subnet" "public_b" {
   vpc_id                  = aws_vpc.news_vpc.id
   cidr_block              = "10.0.2.0/24"
   map_public_ip_on_launch = true
-  availability_zone = data.aws_availability_zones.available.names[0]
+  availability_zone       = data.aws_availability_zones.available.names[0]
 
   tags = {
     Name = "news-public-b"
@@ -50,8 +50,8 @@ resource "aws_subnet" "public_b" {
 
 # 4. Private subnets (for RDS + Lambdas)
 resource "aws_subnet" "private_a" {
-  vpc_id            = aws_vpc.news_vpc.id
-  cidr_block        = "10.0.11.0/24"
+  vpc_id     = aws_vpc.news_vpc.id
+  cidr_block = "10.0.11.0/24"
 
   tags = {
     Name = "news-private-a"
@@ -59,8 +59,8 @@ resource "aws_subnet" "private_a" {
 }
 
 resource "aws_subnet" "private_b" {
-  vpc_id            = aws_vpc.news_vpc.id
-  cidr_block        = "10.0.12.0/24"
+  vpc_id     = aws_vpc.news_vpc.id
+  cidr_block = "10.0.12.0/24"
 
   tags = {
     Name = "news-private-b"

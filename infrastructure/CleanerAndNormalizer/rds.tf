@@ -49,7 +49,7 @@ resource "aws_iam_role_policy_attachment" "github_actions_rds_management_attach"
 
 # Subnet group for RDS (private subnets only)
 resource "aws_db_subnet_group" "newsdb_subnet_group" {
-  name       = "${var.env}-rds-newsdb-subnet-group"
+  name = "${var.env}-rds-newsdb-subnet-group"
   subnet_ids = [
     aws_subnet.private_a.id,
     aws_subnet.private_b.id,
@@ -68,9 +68,9 @@ resource "aws_db_instance" "newsdb" {
   password          = var.db_password
   allocated_storage = 20
 
-  db_subnet_group_name     = aws_db_subnet_group.newsdb_subnet_group.name
-  publicly_accessible = false
-  skip_final_snapshot = true
+  db_subnet_group_name   = aws_db_subnet_group.newsdb_subnet_group.name
+  publicly_accessible    = false
+  skip_final_snapshot    = true
   vpc_security_group_ids = [var.rds_sg_id]
-  depends_on = [ aws_iam_role_policy_attachment.github_actions_rds_management_attach ]
+  depends_on             = [aws_iam_role_policy_attachment.github_actions_rds_management_attach]
 }

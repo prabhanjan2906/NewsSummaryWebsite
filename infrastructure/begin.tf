@@ -1,7 +1,7 @@
 module "vpc" {
   source = "./VPC"
-  region               = var.REGION
-  env                  = var.ENVIRONMENT
+  region = var.REGION
+  env    = var.ENVIRONMENT
 }
 
 module "NewsIngestor" {
@@ -13,9 +13,9 @@ module "NewsIngestor" {
   country              = var.COUNTRY
   RAW_BUCKET_INPUT_KEY = var.RAW_BUCKET_INPUT_KEY
   RAW_BUCKET           = var.RAW_BUCKET
-  newsingestor_sg_id = module.vpc.newsingestor_sg_id
-  private_subnet_a = module.vpc.private_subnet_a_id
-  private_subnet_b = module.vpc.private_subnet_b_id
+  newsingestor_sg_id   = module.vpc.newsingestor_sg_id
+  private_subnet_a     = module.vpc.private_subnet_a_id
+  private_subnet_b     = module.vpc.private_subnet_b_id
 }
 
 module "CleanerAndNormalizer" {
@@ -28,8 +28,8 @@ module "CleanerAndNormalizer" {
   db_name                  = var.DB_NAME
   db_password              = var.DB_PASSWORD
   db_user                  = var.DB_USER
-  rds_sg_id = module.vpc.rds_sg_id
-  lambda_sg = module.vpc.newsingestor_sg_id
-  private_subnet_a = module.vpc.private_subnet_a_id
-  private_subnet_b = module.vpc.private_subnet_b_id
+  rds_sg_id                = module.vpc.rds_sg_id
+  lambda_sg                = module.vpc.newsingestor_sg_id
+  private_subnet_a         = module.vpc.private_subnet_a_id
+  private_subnet_b         = module.vpc.private_subnet_b_id
 }
