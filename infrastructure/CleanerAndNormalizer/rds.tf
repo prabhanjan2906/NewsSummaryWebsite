@@ -51,8 +51,8 @@ resource "aws_iam_role_policy_attachment" "github_actions_rds_management_attach"
 resource "aws_db_subnet_group" "newsdb_subnet_group" {
   name = "${var.env}-rds-newsdb-subnet-group"
   subnet_ids = [
-    aws_subnet.private_a.id,
-    aws_subnet.private_b.id,
+    var.private_subnet_a,
+    var.private_subnet_b,
   ]
 
   tags = {
