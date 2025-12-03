@@ -1,13 +1,14 @@
-# module "identity" {
-#   source = "./identity"
-# }
+module "identity" {
+  source = "./identity"
+}
 
 module "vpc" {
+  count = module.identity.is_identity_deployed
   source       = "./VPC"
   region       = var.REGION
   env          = var.ENVIRONMENT
   SubnetsCount = 2
-  # depends_on   = [module.identity]
+  depends_on   = [module.identity]
 }
 
 module "NewsIngestor" {
