@@ -47,7 +47,7 @@ resource "aws_vpc" "news_vpc" {
   tags = {
     Name = "news-vpc"
   }
-  depends_on = [aws_internet_gateway.news_igw, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
+  depends_on = [aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
 }
 
 # 2. Internet Gateway for public subnets
@@ -69,7 +69,7 @@ resource "aws_subnet" "public_a" {
   tags = {
     Name = "news-public-a"
   }
-  depends_on = [aws_internet_gateway.news_igw, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
+  depends_on = [aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
 }
 
 resource "aws_subnet" "public_b" {
@@ -80,7 +80,7 @@ resource "aws_subnet" "public_b" {
   tags = {
     Name = "news-public-b"
   }
-  depends_on = [aws_internet_gateway.news_igw, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
+  depends_on = [aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
 }
 
 # 4. Private subnets (for RDS + Lambdas)
@@ -91,7 +91,7 @@ resource "aws_subnet" "private_a" {
   tags = {
     Name = "news-private-a"
   }
-  depends_on = [aws_internet_gateway.news_igw, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
+  depends_on = [aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
 }
 
 resource "aws_subnet" "private_b" {
@@ -101,7 +101,7 @@ resource "aws_subnet" "private_b" {
   tags = {
     Name = "news-private-b"
   }
-  depends_on = [aws_internet_gateway.news_igw, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
+  depends_on = [aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
 }
 
 # 5. Public route table (0.0.0.0/0 -> IGW)
@@ -116,19 +116,19 @@ resource "aws_route_table" "public_rt" {
   tags = {
     Name = "news-public-rt"
   }
-  depends_on = [aws_internet_gateway.news_igw, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
+  depends_on = [aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
 }
 
 resource "aws_route_table_association" "public_a_assoc" {
   subnet_id      = aws_subnet.public_a.id
   route_table_id = aws_route_table.public_rt.id
-  depends_on = [aws_internet_gateway.news_igw, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
+  depends_on = [aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
 }
 
 resource "aws_route_table_association" "public_b_assoc" {
   subnet_id      = aws_subnet.public_b.id
   route_table_id = aws_route_table.public_rt.id
-  depends_on = [aws_internet_gateway.news_igw, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
+  depends_on = [aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
 }
 
 # 6. NAT Gateway in public subnet A
@@ -148,7 +148,7 @@ resource "aws_nat_gateway" "news_nat" {
     Name = "news-nat"
   }
 
-  depends_on = [aws_internet_gateway.news_igw, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
+  depends_on = [aws_eip.nat_eip, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
 }
 
 # 7. Private route table (0.0.0.0/0 -> NAT)
@@ -169,13 +169,13 @@ resource "aws_route_table" "private_rt" {
 resource "aws_route_table_association" "private_a_assoc" {
   subnet_id      = aws_subnet.private_a.id
   route_table_id = aws_route_table.private_rt.id
-  depends_on = [aws_internet_gateway.news_igw, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
+  depends_on = [aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
 }
 
 resource "aws_route_table_association" "private_b_assoc" {
   subnet_id      = aws_subnet.private_b.id
   route_table_id = aws_route_table.private_rt.id
-  depends_on = [aws_internet_gateway.news_igw, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
+  depends_on = [aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
 }
 
 output "private_subnet_a_id" {
