@@ -260,6 +260,14 @@ jobs:
     #   working-directory: ./infrastructure
     #   run: terraform validate -var-file="terraform.tfvars"
 
+    - name: Identity Policy Deploy - Plan
+      working-directory: ./infrastructure/identity
+      run: terraform plan -out=tfplan_identity -input=false
+
+    - name: Identity Policy Deploy - Apply
+      working-directory: ./infrastructure/identity
+      run: terraform apply -auto-approve -input=false tfplan_identity
+
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       working-directory: ./infrastructure
