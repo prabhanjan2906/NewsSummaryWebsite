@@ -133,40 +133,40 @@ resource "aws_route_table_association" "public_b_assoc" {
   depends_on = [aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
 }
 
-# # 6. NAT Gateway in public subnet A
-# resource "aws_eip" "nat_eip" {
-#   domain = "vpc"
-#   tags = {
-#     Name = "news-nat-eip"
-#   }
-#   depends_on = [aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
-# }
+# 6. NAT Gateway in public subnet A
+resource "aws_eip" "nat_eip" {
+  domain = "vpc"
+  tags = {
+    Name = "news-nat-eip"
+  }
+  depends_on = [aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
+}
 
-# resource "aws_nat_gateway" "news_nat" {
-#   allocation_id = aws_eip.nat_eip.id
-#   subnet_id     = aws_subnet.public_a.id
+resource "aws_nat_gateway" "news_nat" {
+  allocation_id = aws_eip.nat_eip.id
+  subnet_id     = aws_subnet.public_a.id
 
-#   tags = {
-#     Name = "news-nat"
-#   }
+  tags = {
+    Name = "news-nat"
+  }
 
-#   depends_on = [aws_eip.nat_eip, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
-# }
+  depends_on = [aws_eip.nat_eip, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
+}
 
 # 7. Private route table (0.0.0.0/0 -> NAT)
-# resource "aws_route_table" "private_rt" {
-#   vpc_id = aws_vpc.news_vpc.id
+resource "aws_route_table" "private_rt" {
+  vpc_id = aws_vpc.news_vpc.id
 
-#   route {
-#     cidr_block     = "0.0.0.0/0"
-#     nat_gateway_id = aws_nat_gateway.news_nat.id
-#   }
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.news_nat.id
+  }
 
-#   tags = {
-#     Name = "news-private-rt"
-#   }
-#   depends_on = [aws_internet_gateway.news_igw, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
-# }
+  tags = {
+    Name = "news-private-rt"
+  }
+  depends_on = [aws_internet_gateway.news_igw, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
+}
 
 resource "aws_route_table_association" "private_a_assoc" {
   subnet_id      = aws_subnet.private_a.id
