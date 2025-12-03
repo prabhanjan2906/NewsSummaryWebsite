@@ -257,7 +257,6 @@ jobs:
       working-directory: ./infrastructure
       run: |
         terraform state rm module.vpc.aws_eip.nat_eip
-        terraform state rm module.vpc.aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach
         terraform state rm module.vpc.aws_security_group.lambda_sg
         terraform state rm module.vpc.aws_security_group.rds_sg
         terraform state rm module.vpc.aws_vpc.news_vpc
