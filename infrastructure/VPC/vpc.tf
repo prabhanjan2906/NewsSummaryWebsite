@@ -47,6 +47,15 @@ resource "aws_iam_policy" "github_actions_ec2_readonly" {
   })
 }
 
+data "aws_iam_role" "github_actions_role" {
+  name = "GithubActionsRole"
+}
+
+resource "aws_iam_role_policy_attachment" "github_actions_ec2_readonly_attach" {
+  role       = data.aws_iam_role.github_actions_role.name
+  policy_arn = aws_iam_policy.github_actions_ec2_readonly.arn
+}
+
 data "aws_availability_zones" "available" {}
 
 # 3. Public subnets (for NAT gateway, ALBs, etc.)
