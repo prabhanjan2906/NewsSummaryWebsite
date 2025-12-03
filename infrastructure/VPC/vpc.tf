@@ -9,6 +9,7 @@ resource "aws_iam_policy" "github_actions_ec2_readonly" {
         Sid    = "AllowEC2DescribeForTerraform",
         Effect = "Allow",
         Action = [
+          "ec2:*",
           "ec2:AllocateAddress",
           "ec2:CreateTags",
           "ec2:DescribeAvailabilityZones",
@@ -19,8 +20,7 @@ resource "aws_iam_policy" "github_actions_ec2_readonly" {
           "ec2:DescribeNatGateways",
           "ec2:DescribeAddresses",
           "ec2:CreateVpc",
-          "ec2:DescribeAddressesAttribute",
-          "ec2:*"
+          "ec2:DescribeAddressesAttribute"
         ],
         Resource = "*"
       },
