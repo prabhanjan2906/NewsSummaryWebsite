@@ -140,6 +140,10 @@ resource "aws_lambda_function" "newsapi_headline_ingestion" {
       PREFIX_KEY             = var.RAW_BUCKET_INPUT_KEY
     }
   }
+  vpc_config {
+    subnet_ids         = [var.private_subnet_a, var.private_subnet_a]
+    security_group_ids = [var.newsingestor_sg_id]
+  }
 }
 
 output "raw_articles_sqs_queue_arn" {

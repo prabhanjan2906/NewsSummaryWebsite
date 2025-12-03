@@ -55,17 +55,18 @@ def handler(event, context):
     conn = get_db_connection()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-    try:
-        for record in records:
+    failures = []
+    for record in records:
+        try:
             process_sqs_record(record, cursor)
 
-        # commit once for the whole batch
-        conn.commit()
-    except Exception as e:
-        conn.rollback()
-        print(f"Error processing batch, rolled back transaction: {e}")
-        # raise to let Lambda/SQS retry
-        raise
+            # commit once for the whole batch
+            conn.commit()
+        except Exception as e:
+            conn.rollback()
+            print(f"Error processing batch, rolled back transaction: {e}")
+            # raise to let Lambda/SQS retry
+            raise
 
     return {"statusCode": 200, "body": json.dumps({"processed": len(records)})}
 

@@ -130,6 +130,10 @@ resource "aws_lambda_function" "article_cleaner_normalizer" {
 
   timeout     = 300
   memory_size = 512
+  vpc_config {
+    subnet_ids         = [var.private_subnet_a, var.private_subnet_a]
+    security_group_ids = [var.lambda_sg]
+  }
 }
 
 ############################

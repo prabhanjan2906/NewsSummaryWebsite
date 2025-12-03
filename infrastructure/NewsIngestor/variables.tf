@@ -36,3 +36,9 @@ variable "RAW_BUCKET" {
   description = "raw bucket name"
   type        = string
 }
+
+variable "newsingestor_sg_id" {}
+
+variable "private_subnet_a" {}
+
+variable "private_subnet_b" {}
