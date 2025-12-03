@@ -127,6 +127,7 @@ resource "aws_eip" "nat_eip" {
   tags = {
     Name = "news-nat-eip"
   }
+  depends_on = [aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
 }
 
 resource "aws_nat_gateway" "news_nat" {
@@ -137,7 +138,7 @@ resource "aws_nat_gateway" "news_nat" {
     Name = "news-nat"
   }
 
-  depends_on = [aws_internet_gateway.news_igw]
+  depends_on = [aws_internet_gateway.news_igw, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
 }
 
 # 7. Private route table (0.0.0.0/0 -> NAT)
