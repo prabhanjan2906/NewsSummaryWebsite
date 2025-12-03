@@ -1,5 +1,5 @@
 resource "aws_iam_policy" "github_actions_ec2_readonly" {
-  name        = "github-actions-ec2-readonly"
+  name        = "github-actions-ec2"
   description = "Allow GitHubActionsRole to call EC2 Describe APIs needed by Terraform VPC module"
 
   policy = jsonencode({
