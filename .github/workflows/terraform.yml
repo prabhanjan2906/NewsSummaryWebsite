@@ -260,6 +260,10 @@ jobs:
     #   working-directory: ./infrastructure
     #   run: terraform validate -var-file="terraform.tfvars"
 
+    - name: Terraform Init Again - Identity
+      working-directory: ./infrastructure/identity
+      run: terraform init -reconfigure -backend-config=../backend.hcl
+
     - name: Identity Policy Deploy - Plan
       working-directory: ./infrastructure/identity
       run: terraform plan -out=tfplan_identity -input=false
