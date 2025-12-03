@@ -57,7 +57,7 @@ resource "aws_internet_gateway" "news_igw" {
   tags = {
     Name = "news-igw"
   }
-  depends_on = [aws_internet_gateway.news_igw, aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
+  depends_on = [aws_iam_role_policy_attachment.github_actions_ec2_readonly_attach]
 }
 
 # 3. Public subnets (for NAT gateway, ALBs, etc.)
