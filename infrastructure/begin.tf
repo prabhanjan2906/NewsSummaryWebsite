@@ -3,10 +3,10 @@ module "identity" {
 }
 
 module "vpc" {
-  source = "./VPC"
-  region = var.REGION
-  env    = var.ENVIRONMENT
-  depends_on = [ module.identity ]
+  source     = "./VPC"
+  region     = var.REGION
+  env        = var.ENVIRONMENT
+  depends_on = [module.identity]
 }
 
 module "NewsIngestor" {
@@ -21,7 +21,7 @@ module "NewsIngestor" {
   newsingestor_sg_id   = module.vpc.newsingestor_sg_id
   private_subnet_a     = module.vpc.private_subnet_a_id
   private_subnet_b     = module.vpc.private_subnet_b_id
-  depends_on = [ module.vpc ]
+  depends_on           = [module.vpc]
 }
 
 module "CleanerAndNormalizer" {
@@ -38,5 +38,5 @@ module "CleanerAndNormalizer" {
   lambda_sg                = module.vpc.newsingestor_sg_id
   private_subnet_a         = module.vpc.private_subnet_a_id
   private_subnet_b         = module.vpc.private_subnet_b_id
-  depends_on = [ module.vpc ]
+  depends_on               = [module.vpc]
 }
