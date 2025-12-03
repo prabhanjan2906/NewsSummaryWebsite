@@ -255,6 +255,10 @@ jobs:
       working-directory: ./infrastructure
       run: terraform fmt -check
 
+    - name: Terraform state list
+      working-directory: ./infrastructure
+      run: terraform state list
+
     - name: Terraform remove eip
       working-directory: ./infrastructure
       run: terraform state rm aws_eip.nat_eip
