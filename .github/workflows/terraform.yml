@@ -263,13 +263,11 @@ jobs:
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       working-directory: ./infrastructure
-      # env:
-        # TF_VAR_NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
-        # TF_VAR_COUNTRY: ${{ vars.COUNTRY }}
-        # TF_VAR_LANGUAGE: ${{ vars.LANGUAGE }}
-        # TF_VAR_RAW_BUCKET: ${{ vars.RAW_BUCKET }}
-        # TF_VAR_ENVIRONMENT: ${{ github.job.environment }}
       run: terraform plan -out=tfplan -input=false -var-file="terraform.tfvars"
+
+    - name: Terraform Apply identity
+      working-directory: ./infrastructure
+      run: terraform apply -target=module.identity -auto-approve -input=false tfplan
 
       # On push to "develop", build or change infrastructure according to Terraform configuration files
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
