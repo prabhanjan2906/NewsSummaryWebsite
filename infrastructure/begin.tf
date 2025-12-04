@@ -3,7 +3,7 @@ module "identity" {
 }
 
 module "vpc" {
-  count        = module.identity.is_identity_deployed
+  # count        = module.identity.is_identity_deployed
   source       = "./VPC"
   region       = var.REGION
   env          = var.ENVIRONMENT
