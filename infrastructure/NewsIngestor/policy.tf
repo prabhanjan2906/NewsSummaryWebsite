@@ -29,7 +29,7 @@ resource "aws_iam_policy" "newsapi_lambda_policy" {
         ]
         Resource = aws_sqs_queue.raw_articles_queue.arn
       },
-            {
+      {
         Sid    = "AllowEC2DescribeForTerraform",
         Effect = "Allow",
         Action = [

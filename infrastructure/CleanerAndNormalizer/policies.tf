@@ -61,20 +61,20 @@ resource "aws_iam_policy" "article_cleaner_lambda_policy" {
           "sqs:SendMessage"
         ]
         Resource = aws_sqs_queue.article_ready_for_clustering_queue.arn
-      # },
-      # {
-      #   Sid    = "AllowENIManagement",
-      #   Effect = "Allow",
-      #   Action = [
-      #     "ec2:CreateNetworkInterface",
-      #     "ec2:DescribeNetworkInterfaces",
-      #     "ec2:DeleteNetworkInterface",
-      #     "ec2:DescribeSubnets",
-      #     "ec2:DescribeSecurityGroups",
-      #     "ec2:DescribeVpcs",
-      #     "ec2:DetachNetworkInterface"
-      #   ],
-      #   Resource = "*"
+        # },
+        # {
+        #   Sid    = "AllowENIManagement",
+        #   Effect = "Allow",
+        #   Action = [
+        #     "ec2:CreateNetworkInterface",
+        #     "ec2:DescribeNetworkInterfaces",
+        #     "ec2:DeleteNetworkInterface",
+        #     "ec2:DescribeSubnets",
+        #     "ec2:DescribeSecurityGroups",
+        #     "ec2:DescribeVpcs",
+        #     "ec2:DetachNetworkInterface"
+        #   ],
+        #   Resource = "*"
       }
     ]
   })
