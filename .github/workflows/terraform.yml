@@ -255,11 +255,6 @@ jobs:
       working-directory: ./infrastructure
       run: terraform fmt -check
 
-
-    - name: Force release lock
-      working-directory: ./infrastructure
-      run: terraform force-unlock -force 3f2ac8d3-b6c5-31e9-72d0-c767e6510db7
-
     # # validates Terraform
     # - name: Terraform Validate
     #   working-directory: ./infrastructure
