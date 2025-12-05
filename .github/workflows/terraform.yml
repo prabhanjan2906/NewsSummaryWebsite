@@ -267,7 +267,8 @@ jobs:
       working-directory: ./infrastructure
       run: |
         terraform import module.identity.aws_iam_policy.lambda_vpc_policy arn:aws:iam::343938549966:policy/lambda-vpc-access
-        terraform import module.identity.aws_iam_role.lambda_execution_role arn:aws:iam::343938549966:role/lambda-role
+        terraform import module.identity.aws_iam_role.lambda_role lambda-role
+
     - name: Terraform Apply Identity
       working-directory: ./infrastructure
       run: terraform apply -target=module.identity -auto-approve -input=false tfplan_identity
