@@ -2,26 +2,26 @@
 # IAM Role for Cleaner    #
 ############################
 
-resource "aws_iam_role" "article_cleaner_lambda_role" {
-  name = "article_cleaner_normalizer_role"
+# resource "aws_iam_role" "article_cleaner_lambda_role" {
+#   name = "article_cleaner_normalizer_role"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        }
-        Action = "sts:AssumeRole"
-      }
-    ]
-  })
-}
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Allow"
+#         Principal = {
+#           Service = "lambda.amazonaws.com"
+#         }
+#         Action = "sts:AssumeRole"
+#       }
+#     ]
+#   })
+# }
 
 # Basic logging
 resource "aws_iam_role_policy_attachment" "article_cleaner_lambda_basic" {
-  role       = aws_iam_role.article_cleaner_lambda_role.name
+  role       = var.execution_role
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
@@ -61,12 +61,30 @@ resource "aws_iam_policy" "article_cleaner_lambda_policy" {
           "sqs:SendMessage"
         ]
         Resource = aws_sqs_queue.article_ready_for_clustering_queue.arn
+      # },
+      # {
+      #   Sid    = "AllowENIManagement",
+      #   Effect = "Allow",
+      #   Action = [
+      #     "ec2:CreateNetworkInterface",
+      #     "ec2:DescribeNetworkInterfaces",
+      #     "ec2:DeleteNetworkInterface",
+      #     "ec2:DescribeSubnets",
+      #     "ec2:DescribeSecurityGroups",
+      #     "ec2:DescribeVpcs",
+      #     "ec2:DetachNetworkInterface"
+      #   ],
+      #   Resource = "*"
       }
     ]
   })
 }
 
 resource "aws_iam_role_policy_attachment" "article_cleaner_lambda_policy_attach" {
-  role       = aws_iam_role.article_cleaner_lambda_role.name
+  role       = var.execution_role
   policy_arn = aws_iam_policy.article_cleaner_lambda_policy.arn
+}
+
+data "aws_iam_role" "article_cleaner_lambda_role" {
+  name = var.execution_role
 }

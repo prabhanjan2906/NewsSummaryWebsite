@@ -27,7 +27,7 @@ resource "aws_lambda_layer_version" "article_cleaner_normalizer_dependency_layer
 # NOTE: build this zip file yourself containing cleaner_app.py as handler module
 resource "aws_lambda_function" "article_cleaner_normalizer" {
   function_name = "${var.env}-article_cleaner_normalizer"
-  role          = aws_iam_role.article_cleaner_lambda_role.arn
+  role          = data.aws_iam_role.article_cleaner_lambda_role.arn
   runtime       = local.pythonVersion
   handler       = "cleaner_and_normalizer.handler"
 

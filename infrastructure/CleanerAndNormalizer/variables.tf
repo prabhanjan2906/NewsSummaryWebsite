@@ -44,3 +44,8 @@ variable "SubnetsCount" {
   type    = number
   default = 2
 }
+
+variable "execution_role" {
+  description = "Execution Role Name"
+  type        = string
+}

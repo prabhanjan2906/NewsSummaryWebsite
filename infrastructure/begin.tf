@@ -1,5 +1,6 @@
 module "identity" {
   source = "./identity"
+  role_name = local.execution_role
 }
 
 module "vpc" {
@@ -24,6 +25,7 @@ module "NewsIngestor" {
   private_subnets      = module.vpc.private_subnets_id
   SubnetsCount         = 2
   depends_on           = [module.vpc]
+  execution_role       = local.execution_role
 }
 
 module "CleanerAndNormalizer" {
@@ -41,4 +43,5 @@ module "CleanerAndNormalizer" {
   private_subnets          = module.vpc.private_subnets_id
   SubnetsCount             = 2
   depends_on               = [module.vpc]
+  execution_role       = local.execution_role
 }
