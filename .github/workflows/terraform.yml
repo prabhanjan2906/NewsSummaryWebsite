@@ -266,6 +266,7 @@ jobs:
     - name: Terraform remove module
       working-directory: ./infrastructure
       run: |
+        terraform state list
         terraform state rm module.identity.aws_iam_role.lambda_role
     - name: Terraform import Identity
       working-directory: ./infrastructure
