@@ -263,10 +263,10 @@ jobs:
     - name: Terraform Plan Identity
       working-directory: ./infrastructure
       run: terraform plan -target=module.identity -out=tfplan_identity -input=false -var-file="terraform.tfvars"
-    - name: Terraform import Identity
-      working-directory: ./infrastructure
-      run: |
-        terraform import module.identity.aws_iam_role.lambda_role arn:aws:iam::343938549966:role/lambda-role
+    # - name: Terraform import Identity
+    #   working-directory: ./infrastructure
+    #   run: |
+    #     terraform import module.identity.aws_iam_role.lambda_role arn:aws:iam::343938549966:role/lambda-role
 
     - name: Terraform Apply Identity
       working-directory: ./infrastructure
