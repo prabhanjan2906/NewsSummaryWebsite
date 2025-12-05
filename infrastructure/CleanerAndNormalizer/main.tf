@@ -45,7 +45,8 @@ resource "aws_lambda_function" "article_cleaner_normalizer" {
 
       DB_HOST     = aws_db_instance.newsdb.address
       DB_PORT     = aws_db_instance.newsdb.port
-      DB_NAME     = aws_db_instance.newsdb.db_name
+      DB_NAME     = "development-news-db"
+      # DB_NAME     = aws_db_instance.newsdb.db_name
       DB_USER     = aws_db_instance.newsdb.username
       DB_PASSWORD = aws_db_instance.newsdb.password
     }
