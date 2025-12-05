@@ -70,7 +70,9 @@ resource "aws_subnet" "private_subnets" {
   tags = {
     Name = "${var.env}-news-private-${count.index}"
   }
-
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # resource "aws_subnet" "private_b" {
