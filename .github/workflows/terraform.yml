@@ -263,6 +263,10 @@ jobs:
     - name: Terraform Plan Identity
       working-directory: ./infrastructure
       run: terraform plan -target=module.identity -out=tfplan_identity -input=false -var-file="terraform.tfvars"
+    - name: Terraform remove module
+      working-directory: ./infrastructure
+      run: |
+        terraform state rm module.identity.aws_iam_role.lambda_role
     - name: Terraform import Identity
       working-directory: ./infrastructure
       run: |
