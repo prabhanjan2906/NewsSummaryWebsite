@@ -268,11 +268,10 @@ jobs:
     #   run: |
     #     terraform state list
     #     terraform state rm module.identity.aws_iam_role.lambda_execution_role
-    - name: Terraform import Identity
-      working-directory: ./infrastructure
-      run: |
-        terraform import module.identity.aws_iam_role.lambda_execution_role lambda-role
-      # terraform import module.identity.aws_iam_role.lambda_execution_role arn:aws:iam::343938549966:role/lambda-role
+    # - name: Terraform import Identity
+    #   working-directory: ./infrastructure
+    #   run: |
+    #     terraform import module.identity.aws_iam_role.lambda_execution_role lambda-role
 
     - name: Terraform Apply Identity
       working-directory: ./infrastructure
