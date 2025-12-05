@@ -56,6 +56,7 @@ resource "aws_iam_policy" "github_actions_ec2_readonly" {
         Action = [
           "rds:AddTagsToResource",
           "rds:ListTagsForResource",
+          "rds:ModifyDBSubnetGroup",
           "ec2:DescribeNetworkInterfaces",
           "ec2:DetachNetworkInterface",
           "ec2:DeleteNetworkInterface"
