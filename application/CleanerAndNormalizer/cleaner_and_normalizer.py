@@ -39,6 +39,22 @@ def get_db_connection():
         _db_conn.autocommit = False  # we will commit manually
     return _db_conn
 
+def init_db():
+    articles_table = "CREATE TABLE IF NOT EXISTS articles (" \
+      "source TEXT NOT NULL, " \
+      "external_id TEXT, " \
+      "url TEXT NOT NULL, " \
+      "title TEXT NOT NULL, " \
+      "published_at TIMESTAMPTZ NOT NULL, " \
+      "language TEXT, " \
+      "cluster_id TEXT, " \
+      "raw_text_location TEXT NOT NULL, " \
+      "created_at TIMESTAMPTZ NOT NULL DEFAULT now());"
+    conn = get_db_connection()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute(articles_table)
+
+init_db()  # cold start
 
 def handler(event, context):
     """
