@@ -113,7 +113,6 @@ def ensure_table_schema(
     conn.commit()
 
 def ensure_all_tables(
-    conn,
     schema_file_path: str = "schema.json",
     schema: str = "public",
 ) -> None:
@@ -123,6 +122,8 @@ def ensure_all_tables(
     """
     with open(schema_file_path, "r", encoding="utf-8") as f:
         all_specs = json.load(f)
+
+    conn = get_db_connection()
 
     for table_name in all_specs.keys():
         spec = all_specs.get(table_name)
