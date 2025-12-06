@@ -40,6 +40,7 @@ def get_db_connection():
     return _db_conn
 
 def init_db():
+    print("creating table")
     articles_table = "CREATE TABLE IF NOT EXISTS articles (" \
       "source TEXT NOT NULL, " \
       "external_id TEXT, " \
