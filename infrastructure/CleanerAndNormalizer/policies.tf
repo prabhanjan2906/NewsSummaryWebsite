@@ -37,7 +37,9 @@ resource "aws_iam_policy" "article_cleaner_lambda_policy" {
         Sid    = "AllowS3Read"
         Effect = "Allow"
         Action = [
-          "s3:GetObject"
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
         ]
         Resource = [
           "arn:aws:s3:::${var.raw_articles_bucket_name}/*"

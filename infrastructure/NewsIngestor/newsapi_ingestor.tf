@@ -58,7 +58,7 @@ resource "aws_lambda_function" "newsapi_headline_ingestion" {
   filename         = "${path.module}/NewsIngestor.zip"
   source_code_hash = filebase64sha256("${path.module}/NewsIngestor.zip")
   timeout          = 300
-  memory_size      = 512
+  memory_size      = 150
 
   layers = [
     aws_lambda_layer_version.newsapi_deps_layer.arn
