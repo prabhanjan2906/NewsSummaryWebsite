@@ -78,20 +78,19 @@ def process_sqs_record(record, cursor):
     # Load raw envelope from S3
     envelope = load_raw_envelope_from_s3(s3_key)
 
-    if False:
-        # Basic dedupe check
-        existing_article_id = find_existing_article(cursor, url, source, external_id)
-        
-        if existing_article_id is not None:
-            print(f"Duplicate article detected (url={url}); id={existing_article_id}")
-            # Optionally delete S3 object to avoid orphaned raw files
-            # If you want to keep all raw ingestion payloads, comment this out.
-            try:
-                s3_client.delete_object(Bucket=RAW_BUCKET_NAME, Key=s3_key)
-                print(f"Deleted duplicate raw object s3://{RAW_BUCKET_NAME}/{s3_key}")
-            except Exception as e:
-                print(f"Failed to delete duplicate raw object: {e}")
-            return
+    # Basic dedupe check
+    existing_article_id = find_existing_article(cursor, url, source, external_id)
+    
+    if existing_article_id is not None:
+        print(f"Duplicate article detected (url={url}); id={existing_article_id}")
+        # Optionally delete S3 object to avoid orphaned raw files
+        # If you want to keep all raw ingestion payloads, comment this out.
+        try:
+            s3_client.delete_object(Bucket=RAW_BUCKET_NAME, Key=s3_key)
+            print(f"Deleted duplicate raw object s3://{RAW_BUCKET_NAME}/{s3_key}")
+        except Exception as e:
+            print(f"Failed to delete duplicate raw object: {e}")
+        return
 
     # Insert new article into DB
     article_id = insert_article(
