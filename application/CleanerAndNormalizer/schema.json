@@ -1,0 +1,14 @@
+{
+    "articles": {
+        "id" : "BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY" ,
+        "source" : "TEXT NOT NULL" ,
+        "external_id" : "TEXT" ,
+        "url" : "TEXT NOT NULL" ,
+        "title" : "TEXT NOT NULL" ,
+        "published_at": "TIMESTAMPTZ NOT NULL" ,
+        "language" : "TEXT" ,
+        "cluster_id" : "TEXT" ,
+        "raw_text_location" : "TEXT NOT NULL" ,
+        "created_at" : "TIMESTAMPTZ NOT NULL DEFAULT now()"
+    }
+}

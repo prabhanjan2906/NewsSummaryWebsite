@@ -14,48 +14,7 @@ sqs_client = boto3.client("sqs")
 RAW_BUCKET_NAME = os.environ["RAW_BUCKET_NAME"]
 RAW_ARTICLES_QUEUE_URL = os.environ["RAW_ARTICLES_QUEUE_URL"]
 ARTICLE_READY_FOR_CLUSTERING_QUEUE_URL = os.environ["ARTICLE_READY_FOR_CLUSTERING_QUEUE_URL"]
-
-# ---- DB connection params ----
-DB_HOST = os.environ["DB_HOST"]
-DB_PORT = int(os.environ.get("DB_PORT", "5432"))
-DB_NAME = os.environ["DB_NAME"]
-DB_USER = os.environ["DB_USER"]
-DB_PASSWORD = os.environ["DB_PASSWORD"]
-
-# Global connection (reused across Lambda invocations if container is reused)
-_db_conn = None
-
-
-def get_db_connection():
-    global _db_conn
-    if _db_conn is None or _db_conn.closed:
-        _db_conn = psycopg2.connect(
-            host=DB_HOST,
-            port=DB_PORT,
-            dbname=DB_NAME,
-            user=DB_USER,
-            password=DB_PASSWORD,
-        )
-        _db_conn.autocommit = False  # we will commit manually
-    return _db_conn
-
-def init_db():
-    print("creating table")
-    articles_table = "CREATE TABLE IF NOT EXISTS articles (" \
-      "source TEXT NOT NULL, " \
-      "external_id TEXT, " \
-      "url TEXT NOT NULL, " \
-      "title TEXT NOT NULL, " \
-      "published_at TIMESTAMPTZ NOT NULL, " \
-      "language TEXT, " \
-      "cluster_id TEXT, " \
-      "raw_text_location TEXT NOT NULL, " \
-      "created_at TIMESTAMPTZ NOT NULL DEFAULT now());"
-    conn = get_db_connection()
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    cursor.execute(articles_table)
-
-init_db()  # cold start
+import db_helper
 
 def handler(event, context):
     """
@@ -69,7 +28,7 @@ def handler(event, context):
     records = event.get("Records", [])
     print(f"Received {len(records)} SQS records")
 
-    conn = get_db_connection()
+    conn = db_helper.get_db_connection()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     failures = []
@@ -84,6 +43,7 @@ def handler(event, context):
             print(f"Error processing batch, rolled back transaction: {e}")
             # raise to let Lambda/SQS retry
             raise
+    db_helper.closeDB()
 
     return {"statusCode": 200, "body": json.dumps({"processed": len(records)})}
 
