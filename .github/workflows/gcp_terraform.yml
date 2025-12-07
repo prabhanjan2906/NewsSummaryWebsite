@@ -1,0 +1,26 @@
+name: 'GCP Deploy Workflow'
+
+on:
+  workflow_call:
+    inputs:
+      cloud:
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  GCP_build:
+    permissions:
+      id-token: write
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Say Hello
+      run: |
+        echo "Hello GCP" 
