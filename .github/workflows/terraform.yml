@@ -86,8 +86,32 @@ jobs:
         name: NewsIngestor
         path: NewsIngestor.zip
 
+    - name: Create zip archive for CleanerAndNormalizer lambda layer
+      run: |
+        cd application/CleanerAndNormalizer/
+        zip -r ../../CleanerAndNormalizer_python_dependency_layer.zip ./python -x "*.git*" 
+
+    - name: Upload artifact for CleanerAndNormalizer lambda layer
+      uses: actions/upload-artifact@v4
+      with:
+        name: CleanerAndNormalizer_python_dependency_layer
+        path: CleanerAndNormalizer_python_dependency_layer.zip
+
+    - name: Create zip archive for CleanerAndNormalizer lambda function
+      run: |
+        cd application/CleanerAndNormalizer
+        zip -r ../../CleanerAndNormalizer.zip ./* -x "*.git*" "./python/*"
+
+    - name: Upload artifact for CleanerAndNormalizer function
+      uses: actions/upload-artifact@v4
+      with:
+        name: CleanerAndNormalizer
+        path: CleanerAndNormalizer.zip
+
+
   terraform:
     name: 'Terraform'
+    needs: build
     permissions:
       id-token: write
       contents: read
@@ -138,6 +162,18 @@ jobs:
         name: NewsIngestor
         path: infrastructure/NewsIngestor/
 
+    - name: Download Lambda zip artifact for CleanerAndNormalizer lambda layer
+      uses: actions/download-artifact@v4
+      with:
+        name: CleanerAndNormalizer_python_dependency_layer
+        path: infrastructure/CleanerAndNormalizer/
+
+    - name: Download Lambda zip artifact for CleanerAndNormalizer lambda function
+      uses: actions/download-artifact@v4
+      with:
+        name: CleanerAndNormalizer
+        path: infrastructure/CleanerAndNormalizer/
+
     # Generates an tfvar file for Terraform
     - name: Create terraform.tfvars
       working-directory: ./infrastructure
@@ -149,6 +185,9 @@ jobs:
         echo "ENVIRONMENT= \"$DEPLOY_ENV\"" >> terraform.tfvars
         echo "REGION= \"${{ vars.REGION }}\"" >> terraform.tfvars
         echo "RAW_BUCKET_INPUT_KEY= \"${{ vars.RAW_BUCKET_INPUT_KEY }}\"" >> terraform.tfvars
+        echo "DB_USER= \"${{ vars.DB_USER }}\"" >> terraform.tfvars
+        echo "DB_PASSWORD= \"${{ vars.DB_PASSWORD }}\"" >> terraform.tfvars
+        echo "DB_NAME= \"${{ vars.DB_NAME }}\"" >> terraform.tfvars
         cp terraform.tfvars ../infrastructure_tf_state/terraform.tfvars
         cat terraform.tfvars
 
@@ -220,16 +259,25 @@ jobs:
     # - name: Terraform Validate
     #   working-directory: ./infrastructure
     #   run: terraform validate -var-file="terraform.tfvars"
+    # Generates an execution plan for Terraform
+    - name: Terraform Plan Identity
+      working-directory: ./infrastructure
+      run: terraform plan -target=module.identity -out=tfplan_identity -input=false -var-file="terraform.tfvars"
+
+    - name: Terraform Apply Identity
+      working-directory: ./infrastructure
+      run: terraform apply -target=module.identity -auto-approve -input=false tfplan_identity
+
+    - name: Terraform Plan VPC
+      working-directory: ./infrastructure
+      run: terraform plan -target=module.vpc -out=tfplan_VPC -input=false -var-file="terraform.tfvars"
+    - name: Terraform Apply VPC
+      working-directory: ./infrastructure
+      run: terraform apply -target=module.vpc -auto-approve -input=false tfplan_VPC
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       working-directory: ./infrastructure
-      # env:
-        # TF_VAR_NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
-        # TF_VAR_COUNTRY: ${{ vars.COUNTRY }}
-        # TF_VAR_LANGUAGE: ${{ vars.LANGUAGE }}
-        # TF_VAR_RAW_BUCKET: ${{ vars.RAW_BUCKET }}
-        # TF_VAR_ENVIRONMENT: ${{ github.job.environment }}
       run: terraform plan -out=tfplan -input=false -var-file="terraform.tfvars"
 
       # On push to "develop", build or change infrastructure according to Terraform configuration files

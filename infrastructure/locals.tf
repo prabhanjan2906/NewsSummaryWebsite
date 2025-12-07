@@ -1,3 +1,4 @@
 locals {
-  region = var.REGION
+  region         = var.REGION
+  execution_role = "lambda-role"
 }

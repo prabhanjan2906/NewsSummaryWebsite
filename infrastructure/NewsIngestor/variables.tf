@@ -36,3 +36,17 @@ variable "RAW_BUCKET" {
   description = "raw bucket name"
   type        = string
 }
+
+variable "newsingestor_sg_id" {}
+
+variable "private_subnets" {}
+
+variable "SubnetsCount" {
+  type    = number
+  default = 2
+}
+
+variable "execution_role" {
+  description = "Execution Role Name"
+  type        = string
+}
