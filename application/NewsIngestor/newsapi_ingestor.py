@@ -85,8 +85,7 @@ def handler(event, context):
     print(f"Fetched {len(articles)} articles from NewsAPI")
 
     for article in articles:
-        now_utc = datetime.now(timezone.utc)
-        process_article(article, now_utc)
+        process_article(article)
 
     return {
         "statusCode": 200,
@@ -94,7 +93,7 @@ def handler(event, context):
     }
 
 
-def process_article(article: dict, now_utc: datetime) -> None:
+def process_article(article: dict) -> None:
     """
     For one NewsAPI article:
     - generate a UUID
@@ -104,12 +103,15 @@ def process_article(article: dict, now_utc: datetime) -> None:
     """
 
     article_uuid = str(uuid.uuid4())  # Random UUID for this article
+    now_utc = datetime.now(timezone.utc)
 
     # Basic fields from NewsAPI
     url = article.get("url")
     title = article.get("title")
     author = article.get("author")
     description = webscraper.fetchWebpageArticle(url)
+    if not description:
+        return
 
     # publishedAt from NewsAPI may be ISO format; we'll preserve as-is if present
     published_at_raw = article.get("publishedAt")
