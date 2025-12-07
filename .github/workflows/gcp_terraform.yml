@@ -21,6 +21,53 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Say Hello
-      run: |
-        echo "Hello GCP" 
+  GCP_terraform:
+    name: 'Terraform'
+    needs: GCP_build
+    permissions:
+      id-token: write
+      contents: read
+    runs-on: ubuntu-latest
+
+    environment: ${{ github.ref_name == 'master' && 'gcp_production' || 'gcp_development' }}
+
+    env:
+      DEPLOY_ENV: ${{ github.ref_name == 'master' && 'gcp_production' || 'gcp_development' }}
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      REGION: ${{ vars.REGION }}
+      TF_SA_EMAIL: ${{ secrets.GCP_SA_EMAIL }}
+      # These two come from GCP setup (see step 2b):
+      GCP_WORKLOAD_ID_PROVIDER: projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+      - uses: actions/checkout@v4
+
+      - id: auth
+        name: Auth to GCP via Workload Identity
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{env.GCP_WORKLOAD_ID_PROVIDER}}
+          service_account: ${{env.TF_SA_EMAIL}}
+          export_environment_variables: true    # make sure env vars for gcloud are set
+
+      - uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Test GCP auth
+        run: |
+          echo "Cred file: ${{ steps.auth.outputs.credentials_file_path }}"
+
+          # This may still say 'No credentialed accounts' – that's OK
+          gcloud auth list || true
+
+          echo "Now actually calling an API..."
+          gcloud projects describe "${{ secrets.GCP_PROJECT_ID }}" --format="value(projectId)"
+
+          echo "If you see your project ID above, auth is working"
