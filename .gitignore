@@ -4,3 +4,6 @@ application/lambda/NewsApi/__pycache__
 .venv/
 venv/
 .env
+gcp/infrastructure/.terraform*
+gcp/infrastructure/*.tfvars
+gcp/infrastructure/tfplan*
