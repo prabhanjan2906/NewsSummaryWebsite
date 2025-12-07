@@ -72,7 +72,6 @@ jobs:
   AWS_terraform:
     name: 'Terraform'
     needs: AWS_build
-    # if: ${{ vars.CLOUD == 'AWS' }} 
     permissions:
       id-token: write
       contents: read
