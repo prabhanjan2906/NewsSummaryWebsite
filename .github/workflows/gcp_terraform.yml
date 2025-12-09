@@ -36,6 +36,7 @@ jobs:
       PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       REGION: ${{ vars.REGION }}
       TF_SA_EMAIL: ${{ secrets.GCP_SA_EMAIL }}
+      TF_STATE_BUCKET_NAME: "${{vars.GCP_REGION}}-${{secrets.TERRAFORM_STATE_STORAGE_BUCKET_NAME}}"
       # These two come from GCP setup (see step 2b):
       GCP_WORKLOAD_ID_PROVIDER: projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-pool/providers/github-provider
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
@@ -52,10 +53,11 @@ jobs:
         uses: google-github-actions/auth@v3
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          workload_identity_provider: ${{env.GCP_WORKLOAD_ID_PROVIDER}}
-          service_account: ${{env.TF_SA_EMAIL}}
+          # workload_identity_provider: ${{env.GCP_WORKLOAD_ID_PROVIDER}}
+          # service_account: ${{env.TF_SA_EMAIL}}
           export_environment_variables: true    # make sure env vars for gcloud are set
-
+          credentials_json: "${{ secrets.GOOGLE_SECRET_CREDENTIALS }}"
+          # create_credentials_file: true
       - uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
@@ -71,3 +73,115 @@ jobs:
           gcloud projects describe "${{ secrets.GCP_PROJECT_ID }}" --format="value(projectId)"
 
           echo "If you see your project ID above, auth is working"
+
+      - name: Verify GCP auth
+        run: |
+          gcloud auth print-access-token | head -c 20 && echo ...
+          gcloud projects describe "${{ secrets.GCP_PROJECT_ID }}" --format="value(projectId)"
+
+    # Generates an tfvar file for Terraform
+      - name: Create terraform.tfvars
+        working-directory: gcp/infrastructure
+        run: |
+          echo "NEWS_API_KEY = \"${{ secrets.NEWS_API_KEY }}\"" > terraform.tfvars
+          echo "COUNTRY= \"${{ vars.COUNTRY }}\"" >> terraform.tfvars
+          echo "LANGUAGE= \"${{ vars.LANGUAGE }}\"" >> terraform.tfvars
+          echo "RAW_BUCKET= \"${{ vars.RAW_BUCKET }}\"" >> terraform.tfvars
+          echo "ENVIRONMENT= \"$DEPLOY_ENV\"" >> terraform.tfvars
+          echo "REGION= \"${{ vars.GCP_REGION }}\"" >> terraform.tfvars
+          echo "RAW_BUCKET_INPUT_KEY= \"${{ vars.RAW_BUCKET_INPUT_KEY }}\"" >> terraform.tfvars
+          echo "DB_USER= \"${{ vars.DB_USER }}\"" >> terraform.tfvars
+          echo "DB_PASSWORD= \"${{ vars.DB_PASSWORD }}\"" >> terraform.tfvars
+          echo "DB_NAME= \"${{ vars.DB_NAME }}\"" >> terraform.tfvars
+          echo "TERRAFORM_STATE_STORAGE_BUCKET_NAME= \"$TF_STATE_BUCKET_NAME\"" >> terraform.tfvars
+          echo "GCP_PROJECT_ID= \"${{ secrets.GCP_PROJECT_ID }}\"" >> terraform.tfvars
+          echo "GCP_PROJECT_NUMBER= \"${{ secrets.GCP_PROJECT_NUMBER }}\"" >> terraform.tfvars
+          echo "GCP_TERRAFORM_SERVICE_ACCOUNT_EMAIL= \"${{ secrets.GCP_SA_EMAIL }}\"" >> terraform.tfvars
+          echo "GCP_SA_NAME= \"${{ secrets.GCP_SA_NAME }}\"" >> terraform.tfvars
+          cp terraform.tfvars ../infrastructure_tf_state/terraform.tfvars
+          cat terraform.tfvars
+
+      - name: replace region name in backend.hcl
+        working-directory: gcp/infrastructure
+        run: |
+          sed -i "s|__STATEBUCKETNAME__|${{env.TF_STATE_BUCKET_NAME}}|g" "backend.hcl"
+          cat backend.hcl
+
+      # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.9.5
+
+      - name: Cache .terraform providers
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/.terraform/providers
+          key: ${{ runner.os }}-tf-${{ hashFiles('**/.terraform.lock.hcl') }}
+
+      - name: Terraform Init
+        id: init
+        continue-on-error: true
+        working-directory: gcp/infrastructure
+        run: |
+          terraform init -reconfigure -backend-config=backend.hcl
+
+      - name: Initialize Terraform for bootstrapping state storage resources
+        working-directory: gcp/infrastructure_tf_state
+        if: ${{ steps.init.outcome == 'failure' }}
+        run: terraform init
+
+      - name: Manual import of SA accout
+        working-directory: gcp/infrastructure_tf_state
+        if: ${{ steps.init.outcome == 'failure' }}
+        run: terraform import module.service_account.google_service_account.terraform_sa projects/${{ secrets.GCP_PROJECT_ID }}/serviceAccounts/${{ secrets.GCP_SA_EMAIL }}
+
+      - name: Terraform Plan API Enable
+        if: ${{ steps.init.outcome == 'failure' }}
+        working-directory: gcp/infrastructure_tf_state
+        run: terraform plan -target=module.api_enable -out=tfplan_api_enable -input=false -var-file="terraform.tfvars"
+
+      - name: Terraform Apply API Enable
+        if: ${{ steps.init.outcome == 'failure' }}
+        working-directory: gcp/infrastructure_tf_state
+        run: terraform apply -target=module.api_enable -auto-approve -input=false tfplan_api_enable
+
+      - name: Terraform Plan Service Account
+        if: ${{ steps.init.outcome == 'failure' }}
+        working-directory: gcp/infrastructure_tf_state
+        run: terraform plan -target=module.service_account -out=tfplan_service_account -input=false -var-file="terraform.tfvars"
+
+      - name: Terraform Apply Service Account
+        if: ${{ steps.init.outcome == 'failure' }}
+        working-directory: gcp/infrastructure_tf_state
+        run: terraform apply -target=module.service_account -auto-approve -input=false tfplan_service_account
+
+      - name: Terraform Plan For Creation of State Storage Resources
+        if: ${{ steps.init.outcome == 'failure' }}
+        working-directory: gcp/infrastructure_tf_state
+        run: terraform plan -out=tfplan -input=false
+
+      - name: Terraform apply For Creation of State Storage Resources
+        if: ${{ steps.init.outcome == 'failure' }}
+        working-directory: gcp/infrastructure_tf_state
+        run: terraform apply -auto-approve -input=false tfplan
+
+      - name: Re-Init Again to store the state files as gcp backend
+        if: ${{ steps.init.outcome == 'failure' }}
+        working-directory: gcp/infrastructure_tf_state
+        run: terraform init -reconfigure -migrate-state -backend-config="bucket=${{env.TF_STATE_BUCKET_NAME}}" -backend-config="prefix=terraform/bootstrap/state"
+
+      - name: Re-Init Again as gcp backend
+        if: ${{ steps.init.outcome == 'failure' }}
+        working-directory: gcp/infrastructure
+        run: terraform init -reconfigure -backend-config="backend.hcl"
+
+      - name: Terraform Plan
+        working-directory: gcp/infrastructure
+        run: terraform plan -out=tfplan -input=false -var-file="terraform.tfvars"
+
+      - name: Terraform apply
+        working-directory: gcp/infrastructure
+        run: terraform apply -auto-approve -input=false tfplan
+
