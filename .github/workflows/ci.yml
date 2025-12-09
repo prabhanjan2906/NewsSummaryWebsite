@@ -8,13 +8,6 @@ permissions:
   id-token: write
   contents: read
 jobs:
-  print_hello:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Say Hello
-      run: |
-        echo "Hello cloud=${{ vars.CLOUD_PROVIDER }}" # set it up in settings -> secrets and variables -> action -> project variables
-
   aws_deploy:
     if: ${{ vars.CLOUD_PROVIDER == 'AWS' }}
     uses: ./.github/workflows/aws_terraform.yml
