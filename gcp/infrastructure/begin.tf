@@ -4,6 +4,7 @@ locals {
     "cloudkms.googleapis.com",         # if you use KMS
     "cloudfunctions.googleapis.com",   # if using Cloud Functions
     "run.googleapis.com",              # if using Cloud Run
+    "vpcaccess.googleapis.com",
   ]
 }
 
@@ -21,4 +22,10 @@ module "identity" {
   project_id = var.GCP_PROJECT_ID
   terraform_sa_name = var.GCP_SA_NAME
   required_apis_to_enable = local.required_apis
+}
+
+module "VPC" {
+  source = "./Networking"
+  project_id = var.GCP_PROJECT_ID
+  region = var.REGION
 }
